@@ -52,7 +52,7 @@
                         </div>
                     </li>
                     <!-- 时时彩 -->
-                    <li class="listItem___1BA9t" :key="i" v-else @click="changePage('SSC/CQSSC', {id:d.id,title:d.name})">
+                    <li class="listItem___1BA9t" :key="i" v-else @click="changePage('SSC/SSC', {id:d.id,title:d.name})">
                         <img class="listItemImg" :src="d.cate_img">
                         <div class="listItemRight___3_yMH">
                             <div class="flex rightItem1___2D7FW">
@@ -84,7 +84,7 @@
                         <div class="timer___1iI1P">{{ hour[i] }}:{{ minute[i] }}:{{ second[i] }}</div>
                     </div>
                     <!-- 时时彩 -->
-                    <div class="gridItem___2sSIr" :key="i" v-else @click="changePage('SSC/CQSSC', {id:d.id,title:d.name})">
+                    <div class="gridItem___2sSIr" :key="i" v-else @click="changePage('SSC/SSC', {id:d.id,title:d.name})">
                         <img class="gridItemImg___3nqhZ" :src="d.cate_img">
                         <div class="gameNameInChinese___2oU7A">{{ d.name }}</div>
                         <div class="timer___1iI1P">{{ hour[i] }}:{{ minute[i] }}:{{ second[i] }}</div>

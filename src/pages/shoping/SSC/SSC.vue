@@ -10,36 +10,41 @@
             <!-- 选择玩法 -->
             <div class="navbar am-navbar-title">
                 <div class="menuTitle___3jHiP">玩法</div>
-                <div class="titleContainer___foEz3">
-                    <div class="lotteryTitle___4KqNL">
-                        <div>哈哈哈</div>test
+                <div class="titleContainer___foEz3" v-on:click="openMuen">
+                    <div class="lotteryTitle___4KqNL" v-if="playData!=null">
+                        <div>{{ playData[NavOne_index].name }}</div>
+                        <span>{{ playData[NavOne_index].play_rule[NavTwoFont].title }}</span>
                     </div>
-                    <!-- <span>嘻嘻嘻</span> -->
                     <div class="sanjiao___2WERR"></div>
                 </div>
-                <div class="am-popover-inner" style="display:none">
-                    <div class="parentTitle___1fCnq">选择玩法</div>
-                    <div class="body___1t9uH">
-                        <div class="menuBody___2PhYY">
-                            <div class="menuItem___2Mzkn active">哦哦哦</div>
+                <div class="am-popover-inner_masks" v-show="selectMuen">
+                    <div class="am-popover-inner">
+                        <div class="parentTitle___1fCnq">选择玩法</div>
+                        <div class="body___1t9uH">
+                            <div class="menuBody___2PhYY" v-if="playData!=null">
+                                <div :class="['menuItem___2Mzkn',NavOne_index==i ? 'active' : '']" v-for="(d,i) in playData" :key="i" v-on:click="selectOneNav(d,i)">{{ d.name }}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="activeTitle___143cx">title</div>
-                    <div class="menuBody___2PhYY">
-                        <div class="menuItem___2Mzkn active">item.title</div>
+                        <div class="activeTitle___143cx" v-if="NavTwoData!=null">{{ NavTwoData[NavTwoFont].title }}</div>
+                        <div class="menuBody___2PhYY">
+                            <template v-for="(data,k) in NavTwoData">
+                                <div :class="['menuItem___2Mzkn',NavTwo_index==d.id ? 'active' : '']" v-for="d in data.odds" v-bind:key="d.id" v-on:click="selectTwoNav(d,k)">{{ d.rule }}</div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
             <!-- 购彩助手 -->
             <div class="navbar am-navbar-right" style="position: relative;">
-                <div class="">购彩助手</div>
-                <div class="lottery-mask" style="display:none"></div>
-                <div class="am-popover-content" style="display:none">
-                    <ul class="am-popover-item-ui">
-                        <li @click="changePage('/gameRecord', {})">投注记录</li>
-                        <li @click="changePage('/openLotteryDetails', {id: id, title: title, type: 'ssc'})">开奖历史</li>
-                        <li @click="changePage('/playRule', {id: id})">玩法说明</li>
-                    </ul>
+                <div v-on:click="gczs(1)">购彩助手</div>
+                <div class="lottery-mask" v-show="assistant" v-on:click="gczs(0)">
+                    <div class="am-popover-content">
+                        <ul class="am-popover-item-ui">
+                            <li @click="changePage('/gameRecord', {})">投注记录</li>
+                            <li @click="changePage('/openLotteryDetails', {id: id, title: title, type: 'ssc'})">开奖历史</li>
+                            <li @click="changePage('/playRule', {id: id})">玩法说明</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,7 +64,7 @@
                 <div class="container___3PZA2" style="display:none">
                     <div>正在获取5412541期</div>
                     <div class="flex___16JOt lotteryWinView___1zcag">
-                        <div style="margin-right: .2rem;" >等待开奖...</div>
+                        <div style="margin-right: .2rem;">等待开奖...</div>
                     </div>
                 </div>
                 <div>
@@ -75,17 +80,17 @@
                     </div>
                     <div class="scrollView___1ZMYS">
                         <table class="table___19NyN">
-                            <tr v-for="(item, index) in 10" :key="index">
+                            <tr v-for="(d,index) in tenIssuesData" :key="index">
                                 <td>
-                                    <div class="uniqueIssueNumberTd___20CZH">第50000期</div>
+                                    <div class="uniqueIssueNumberTd___20CZH">{{ d.stage }}期</div>
                                 </td>
                                 <td>
                                     <div class="openCode___1mDSr">
                                         <div class="openCode___1mDSr">
-                                            <div class="flex___16JOt sscItem___2s3g1" v-for="(sub, index) in 10" :key="index">
-                                                <div class="num____BOq0">{{sub}}</div>
+                                            <div class="flex___16JOt sscItem___2s3g1" v-for="(sub,index) in d.number" :key="index">
+                                                <div class="num____BOq0">{{ sub }}</div>
                                             </div>
-                                            <div class="numInfo___1PtxZ">大牛||但是</div>
+                                            <div class="numInfo___1PtxZ">{{ d.detail[0] }}||{{ d.detail[1] }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -99,9 +104,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="container___btf3a" id="tableQiCi">
+                <div class="container___btf3a" id="tableQiCi" :style="{top: tableTop + 'px'}">
                     <div class="container___K0zBX">
-                        <div class="dropIcon___3fbhG"></div>
+                        <div class="dropIcon___3fbhG" @click="showQiCiTable"></div>
                         <div class="container1___3TtZg">
                             <div class="balance___3VTdb">余额：5555元</div>
                             <div class="returnCat">返回购物车<i class="lf_num">k</i></div>
@@ -112,20 +117,22 @@
                             <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 10" :key="index">
                                 <div class="title___3GwzV">哈哈2</div>
                                 <div class="selectItemRight___3lZk3">
-                                <!-- font -->
-                                <div class="flex___16JOt btnContainer___2HDeL">
-                                    <div v-for="(top, i) in 10" :key="i" class="btnItem___21_fq btnItemActive">{{ top }}</div>
-                                </div>
-                                <!-- number -->
-                                <div class="flex___16JOt selectNumBody___9bXff">
-                                    <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
-                                        <div class="selectNumItem___3nDoA selectNumItemActive">{{ btm }}</div>
+                                    <!-- font -->
+                                    <div class="flex___16JOt btnContainer___2HDeL">
+                                        <div v-for="(top, i) in 10" :key="i" class="btnItem___21_fq btnItemActive">{{ top }}</div>
                                     </div>
-                                </div>
-                                <!--  -->
-                                <div class="flex___16JOt checkContainer___2-1YR">
-                                    <div class="" v-for="(bt, k) in 10" :key="k">
-                                        <div class="checkBox___2jX8D iconChecked___1tkhj iconCheck___2HmbD"></div>{{bt}}</div>
+                                    <!-- number -->
+                                    <div class="flex___16JOt selectNumBody___9bXff">
+                                        <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                            <div class="selectNumItem___3nDoA selectNumItemActive">{{ btm }}</div>
+                                        </div>
+                                    </div>
+                                    <!--  -->
+                                    <div class="flex___16JOt checkContainer___2-1YR">
+                                        <div class v-for="(bt, k) in 10" :key="k">
+                                            <div class="checkBox___2jX8D iconChecked___1tkhj iconCheck___2HmbD"></div>
+                                            {{bt}}
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -145,19 +152,37 @@
     </div>
 </template>
 <script>
-    import LotteryLayer from '@/components/lotteryLayer.vue'
-    import {GetPersonalInfo, getLotteryOdds, getLastOneNumber, getNextTimeStage, getLastOpenNumber} from '@/axios/api.js'
-    import {mapState} from 'vuex'
+import LotteryLayer from "@/components/lotteryLayer.vue";
+import {
+    GetPersonalInfo,
+    getLotteryOdds,
+    getLastOneNumber,
+    getNextTimeStage,
+    getLastOpenNumber
+} from "@/axios/api.js";
+import { mapState } from "vuex";
 export default {
-    name: 'SSC',
-    data(){
-        return{
+    name: "SSC",
+    data() {
+        return {
+            NavOne_index:0,
+            NavTwo_index:1,
+            NavTwoFont:0,
+            playData:null, //玩法数据
+            tenIssuesData:null, //近十期数据
+            NavTwoData:null, //二级菜单数据
+            selectMuen:false, //菜单打开关闭
+            assistant:false, //购彩助手
+            tableTop:0,
             hms: {
                 hour: 0,
                 minute: 0,
                 second: 0
             },
-        }
+            loginInfo:{},
+            id: '',
+            title: '',
+        };
     },
     computed: {
         ...mapState(["BettingData"])
@@ -166,86 +191,181 @@ export default {
         LotteryLayer
     },
     destroyed() {
-        document.querySelector('body').setAttribute('style', 'background:#292d30 !important;');
+        document.querySelector("body").setAttribute("style", "background:#292d30 !important;");
         // clearInterval(this.time);
         // clearInterval(this.time10);
     },
     mounted() {
-
+        this.loginInfo = JSON.parse(localStorage.getItem('loginInfo'));
+        this.id = this.$route.query.id
+        this.title = this.$route.query.title
+        this.getPlayingData();
+        this.getLastOpenNumber();
     },
     methods: {
-        returnFn() {
+        // 一级菜单选择
+        selectOneNav:function(data,index){
+            this.NavOne_index = index;
+            this.NavTwoFont = 0;
+            // this.NavTwo_index = data.play_rule[0].odds[0].id;
+            this.NavTwoData = data.play_rule;
+        },
+        // 二级菜单选择
+        selectTwoNav:function(data,k){
+            this.NavTwoFont = k;
+            this.NavTwo_index = data.id;
+            this.selectMuen = false;
+            console.log(data);
+        },
+        // show hide 期次
+      showQiCiTable() {
+        let qiCiHeight = $("#qiCiHeight").height()
+        if (this.tableTop <= 0) {
+            this.tableTop = qiCiHeight;
+            $('.dropIcon___3fbhG').css('transform','rotate(180deg)');
+            this.getLastOpenNumber();
+        } else {
+            this.tableTop = 0;
+            $('.dropIcon___3fbhG').css('transform','rotate(0deg)');
+        }
+      },
+        // 打开菜单
+        openMuen:function(){
+            this.selectMuen = true;
+        },
+        // 购彩助手
+        gczs:function(a){
+            if(a){
+                this.assistant = true;
+            }else{
+                this.assistant = false;
+            }
+        },
+        returnFn:function(){
             let me = this;
-            if(this.$store.state.BettingData[0]){
-                this.$confirm('返回后将清除购物车选择的号码', '注意')
+            if (this.$store.state.BettingData[0]) {
+                this.$confirm("返回后将清除购物车选择的号码", "注意")
                 .then(({ result }) => {
                     if (result) {
                         this.$store.state.BettingData = [];
                         me.$router.back(-1);
                     }
-                })
-            }else{
+                });
+            } else {
                 me.$router.back(-1);
             }
         },
+        // 获取玩法数据
+        getPlayingData:function() {
+            const loading = this.$loading();
+            getLotteryOdds({'token': this.loginInfo.token,'uid': this.loginInfo.id,'cate': this.$route.query.id})
+            .then(res => {
+                if (res.ret == 200) {
+                    this.playData = res.data;
+                    this.NavTwoData = res.data[0].play_rule;
+                    loading.close();
+                } else {
+                    loading.close();
+                    this.$alert(res, '请求出错').then((result) => {
+                        if(result){
+                            this.returnFn();
+                        }
+                    })
+                }
+            })
+        },
+        // 获取最近10期结果
+        getLastOpenNumber:function() {
+            getLastOpenNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id})
+            .then(res => {
+                if (res.ret == 200) {
+                    this.tenIssuesData = res.data
+                } else {
+                    console.log('请求出错:', res);
+                }
+            })
+        },
+        // 获取当前最近一期
+        getLastOneNumber:function(next_stage) {
+            getLastOneNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id,stage: parseInt(next_stage)-1})
+            .then(res => {
+                if (res.ret == 200) {
+                    this.lastOneData = res.data[0];
+                } else {
+                    console.log('请求出错:', res);
+                }
+                // this.getLastOpenNumber()
+            })
+        },
+        // 获取下一期开奖时间
+        getNextTimeStage:function() {
+            getNextTimeStage({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id})
+            .then(res => {
+                if (res.ret == 200) {
+                    this.nextTimeData = res.data;
+                } else {
+                    console.log('请求出错:', res);
+                }
+            })
+        },
     }
-}
+};
 </script>
 <style scoped lang="less">
-  .am-navbar {
+.am-navbar {
     position: fixed;
     left: 0;
     top: 0;
     z-index: 100;
     width: 100%;
-    height: .9rem;
+    height: 0.9rem;
     display: flex;
     justify-content: space-between;
     color: #ffc252;
     background: #292d30;
-  }
+}
 
-  .navbar {
+.navbar {
     flex: 1 1;
     height: 100%;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
     align-items: center;
-  }
+}
 
-  .am-navbar-left {
+.am-navbar-left {
     padding-left: 15px;
     font-size: 16px;
 
     .am-navbar-left-icon {
-      margin-right: 5px;
-      display: inherit;
+        margin-right: 5px;
+        display: inherit;
 
-      .iconBack {
-        background: url('../../../assets/top_bar_back.png') 50% no-repeat;
-        background-size: contain;
-        width: .64rem;
-        height: .64rem;
-      }
+        .iconBack {
+            background: url("../../../assets/top_bar_back.png") 50% no-repeat;
+            background-size: contain;
+            width: 0.64rem;
+            height: 0.64rem;
+        }
     }
-  }
+}
 
-  .am-navbar-title {
+.am-navbar-title {
     -ms-flex-pack: center;
     justify-content: center;
     font-size: 18px;
     white-space: nowrap;
-  }
+}
 
-  .am-navbar-right {
+.am-navbar-right {
     -ms-flex-pack: end;
     justify-content: flex-end;
     font-size: 16px;
     margin-right: 15px;
-  }
+}
 
-  .lottery-mask {
+.lottery-mask {
     width: 100%;
     position: fixed;
     left: 0;
@@ -253,39 +373,39 @@ export default {
     top: 0;
     bottom: 0;
     z-index: 200;
-    background: rgba(0, 0, 0, .6);
-  }
+    background: rgba(0, 0, 0, 0.75);
+}
 
-  .am-popover-content {
+.am-popover-content {
     width: 1.84rem;
     height: auto;
     background: #fff;
     position: absolute;
-    top: .9rem;
-    right: .2rem;
+    top: 0.9rem;
+    right: 0.2rem;
     z-index: 201;
     color: #333;
-    font-size: .30rem;
+    font-size: 0.3rem;
 
     .am-popover-item-ui {
-      width: 100%;
-      padding: 0 8px;
-      position: relative;
+        width: 100%;
+        padding: 0 8px;
+        position: relative;
 
-      li {
-        padding: 8px;
-        border-bottom: 1px #f5f5f5 solid;
-        text-align: center;
+        li {
+            padding: 8px;
+            border-bottom: 1px #f5f5f5 solid;
+            text-align: center;
 
-        &:last-child {
-          border-bottom: none;
+            &:last-child {
+                border-bottom: none;
+            }
         }
-      }
     }
-  }
+}
 
-  .am-popover-item-ui::before {
-    content: '';
+.am-popover-item-ui::before {
+    content: "";
     position: absolute;
     right: 10px;
     top: -5px;
@@ -294,157 +414,172 @@ export default {
     border-color: transparent transparent #fff transparent;
     width: 0;
     height: 0;
-  }
+}
 
-  .menuTitle___3jHiP {
+.menuTitle___3jHiP {
     -webkit-writing-mode: tb-rl;
     -ms-writing-mode: tb-rl;
     writing-mode: tb-rl;
     white-space: normal;
     letter-spacing: 3px;
-    width: .3rem;
+    width: 0.3rem;
     font-weight: 100;
-    font-size: .26rem;
+    font-size: 0.26rem;
     margin-right: 3px;
-  }
+}
 
-  .titleContainer___foEz3 {
+.titleContainer___foEz3 {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
     align-items: center;
     line-height: 38px;
     height: 38px;
-    padding: 0 .1rem;
+    padding: 0 0.1rem;
     border: 1px solid #ffc252;
     border-radius: 3px;
-    font-size: .32rem;
-  }
+    font-size: 0.32rem;
+}
 
-  .sanjiao___2WERR {
+.sanjiao___2WERR {
     margin-left: 5px;
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: .16rem .14rem 0;
+    border-width: 0.16rem 0.14rem 0;
     border-color: #ffc252 transparent transparent;
-  }
+}
 
-  .am-popover-inner {
+.am-popover-inner {
     width: 92%;
     height: auto;
     background: #fff;
     position: absolute;
-    top: .9rem;
+    top: 0.9rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 201;
     color: #333;
 
     .parentTitle___1fCnq {
-      background: #fff;
-      font-size: .36rem;
-      color: #9b9b9b;
-      letter-spacing: 2px;
-      padding: .16rem 0;
+        background: #fff;
+        font-size: 0.36rem;
+        color: #9b9b9b;
+        letter-spacing: 2px;
+        padding: 0.16rem 0;
     }
 
     .body___1t9uH {
-      background: #fff;
-      overflow: auto;
+        background: #fff;
+        overflow: auto;
     }
 
     .menuBody___2PhYY {
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-flow: row wrap;
-      flex-flow: row wrap;
-      -ms-flex-pack: center;
-      justify-content: center;
-      margin: 0 .1rem;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap;
+        -ms-flex-pack: center;
+        justify-content: center;
+        margin: 0 0.1rem;
     }
 
     .menuItem___2Mzkn {
-      background: #fff;
-      width: 1.72rem;
-      font-size: .24rem;
-      border-radius: 4px;
-      color: #000;
-      border: 1px solid #d8d8d8;
-      margin: 5px;
-      padding: 8px 0;
+        background: #fff;
+        width: 1.72rem;
+        font-size: 0.24rem;
+        border-radius: 4px;
+        color: #000;
+        border: 1px solid #d8d8d8;
+        margin: 5px;
+        padding: 8px 0;
 
-      &.active {
-        border: 1px solid #fc3838;
-      }
+        &.active {
+            border: 1px solid #fc3838;
+        }
     }
-  }
+}
 
-  .activeTitle___143cx {
-    padding: .1rem 0;
-  }
+.activeTitle___143cx {
+    padding: 0.1rem 0;
+}
 
-  .lotteryTitle___4KqNL {
+.lotteryTitle___4KqNL {
     text-align: center;
-    font-size: .3rem;
-    line-height: .36rem;
-  }
+    font-size: 0.3rem;
+    line-height: 0.36rem;
+}
 
-  .lotteryWinView___1zcag > span {
+.lotteryWinView___1zcag > span {
     padding-left: 0.1rem;
     font-size: 0.33rem;
-  }
+}
 
-  .lotteryWinView___1zcag > span:first-child {
+.lotteryWinView___1zcag > span:first-child {
     padding-left: 0;
-  }
+}
 
-  .lottery-page .content .btnContainer___2HDeL {
+.lottery-page .content .btnContainer___2HDeL {
     height: 0.6rem;
     line-height: 0.6rem;
-  }
+}
 
-  .lottery-page .content .selectNumBody___9bXff .selectMark___1Dj8V {
+.lottery-page .content .selectNumBody___9bXff .selectMark___1Dj8V {
     margin-left: 0;
-  }
+}
 
-  .lottery-page .content .selectNumBody___9bXff .selectNumItem___3nDoA {
+.lottery-page .content .selectNumBody___9bXff .selectNumItem___3nDoA {
     width: 1rem;
     height: 1rem;
     line-height: 1rem;
     margin: 0.12rem 0.16rem;
-  }
+}
 
-  /* */
-  .checkContainer___2-1YR {
-    padding: .3rem 0;
-    height: .4rem;
+/* */
+.checkContainer___2-1YR {
+    padding: 0.3rem 0;
+    height: 0.4rem;
     -ms-flex-pack: center;
     justify-content: center;
     -ms-flex-align: center;
     align-items: center;
-    font-size: .28rem;
+    font-size: 0.28rem;
 
     .checkBox___2jX8D {
-      margin: 0 .1rem;
-      width: .5rem;
-      height: .5rem;
+        margin: 0 0.1rem;
+        width: 0.5rem;
+        height: 0.5rem;
     }
 
     .iconCheck___2HmbD {
-      background: url(../../../assets/icon_uncheck.png) 50% no-repeat;
-      background-size: contain;
-      width: .4rem;
-      height: .4rem;
+        background: url(../../../assets/icon_uncheck.png) 50% no-repeat;
+        background-size: contain;
+        width: 0.4rem;
+        height: 0.4rem;
     }
 
     .iconChecked___1tkhj {
-      background: url(../../../assets/icon_checked.png) 50% no-repeat;
-      background-size: contain;
-      width: .4rem;
-      height: .4rem;
+        background: url(../../../assets/icon_checked.png) 50% no-repeat;
+        background-size: contain;
+        width: 0.4rem;
+        height: 0.4rem;
     }
-  }
-  .scrollView___1ZMYS{max-height: 2.3rem;overflow-y: auto;-webkit-overflow-scrolling: touch;}
+}
+.scrollView___1ZMYS {
+    max-height: 2.3rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.am-popover-inner_masks{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.75);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
 </style>
 
