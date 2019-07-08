@@ -11,9 +11,9 @@
             <div class="navbar am-navbar-title">
                 <div class="menuTitle___3jHiP">玩法</div>
                 <div class="titleContainer___foEz3" v-on:click="openMuen">
-                    <div class="lotteryTitle___4KqNL" v-if="playData!=null">
-                        <div>{{ playData[NavOne_index].name }}</div>
-                        <span>{{ playData[NavOne_index].play_rule[NavTwoFont].title }}</span>
+                    <div class="lotteryTitle___4KqNL" v-if="NavOneData!=null">
+                        <div>{{ NavOneData[NavOne_index].name }}</div>
+                        <span>{{ NavTwoFont }}</span>
                     </div>
                     <div class="sanjiao___2WERR"></div>
                 </div>
@@ -21,12 +21,12 @@
                     <div class="am-popover-inner">
                         <div class="parentTitle___1fCnq">选择玩法</div>
                         <div class="body___1t9uH">
-                            <div class="menuBody___2PhYY" v-if="playData!=null">
-                                <div :class="['menuItem___2Mzkn',NavOne_index==i ? 'active' : '']" v-for="(d,i) in playData" :key="i" v-on:click="selectOneNav(d,i)">{{ d.name }}</div>
+                            <div class="menuBody___2PhYY" v-if="NavOneData!=null">
+                                <div :class="['menuItem___2Mzkn',NavOne_index==i ? 'active' : '']" v-for="(d,i) in NavOneData" :key="i" v-on:click="selectOneNav(d,i)">{{ d.name }}</div>
                             </div>
                         </div>
-                        <div class="activeTitle___143cx" v-if="NavTwoData!=null">{{ NavTwoData[NavTwoFont].title }}</div>
-                        <div class="menuBody___2PhYY">
+                        <div class="activeTitle___143cx" v-if="NavTwoData!=null">{{ NavTwoFont }}</div>
+                        <div class="menuBody___2PhYY" v-if="NavTwoData!=null">
                             <template v-for="(data,k) in NavTwoData">
                                 <div :class="['menuItem___2Mzkn',NavTwo_index==d.id ? 'active' : '']" v-for="d in data.odds" v-bind:key="d.id" v-on:click="selectTwoNav(d,k)">{{ d.rule }}</div>
                             </template>
@@ -51,24 +51,24 @@
         <!-- 主要 -->
         <div class="content">
             <div class="lotteryBetTimer___1mgMG">
-                <div class="container___3PZA2">
-                    <div>54125期</div>
+                <div class="container___3PZA2" v-if="data.lastOneNumber!=null">
+                    <div>{{ data.lastOneNumber.stage }}期</div>
                     <div class="lotteryWinView___1zcag">
                         <div class="flex___16JOt openCode___2oEky">
-                            <div class="flex___16JOt sscItem___1-Qyy" v-for="(item, index) in 10" :key="index">
+                            <div class="flex___16JOt sscItem___1-Qyy" v-for="(item, index) in data.lastOneNumber.number" :key="index">
                                 <div class="num___31j0E">{{item}}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="container___3PZA2" style="display:none">
-                    <div>正在获取5412541期</div>
+                <div class="container___3PZA2" v-else>
+                    <div>正在获取开奖数据</div>
                     <div class="flex___16JOt lotteryWinView___1zcag">
-                        <div style="margin-right: .2rem;">等待开奖...</div>
+                        <div style="margin-right: .2rem;" v-if="data.lastOneNumber!=null">等待{{ Number(data.thisOpenTottery.next_stage)-1 }}开奖</div>
                     </div>
                 </div>
                 <div>
-                    <div class="currentIssueId___1xhbZ">距8541234期截止</div>
+                    <div class="currentIssueId___1xhbZ" v-if="data.lastOneNumber!=null">距{{ data.thisOpenTottery.next_stage }}期截止</div>
                     <div class="timer___1tSLt">{{hms.hour}}:{{hms.minute}}:{{hms.second}}</div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="scrollView___1ZMYS">
                         <table class="table___19NyN">
-                            <tr v-for="(d,index) in tenIssuesData" :key="index">
+                            <tr v-for="(d,index) in data.lastOpenNumber" :key="index">
                                 <td>
                                     <div class="uniqueIssueNumberTd___20CZH">{{ d.stage }}期</div>
                                 </td>
@@ -114,23 +114,26 @@
                     </div>
                     <div class="betContainer___2sw-n">
                         <ul>
-                            <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 10" :key="index">
-                                <div class="title___3GwzV">哈哈2</div>
+                            <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
+                                <div class="title___3GwzV">{{ titleArr[index] }}</div>
                                 <div class="selectItemRight___3lZk3">
                                     <!-- font -->
                                     <div class="flex___16JOt btnContainer___2HDeL">
-                                        <div v-for="(top, i) in 10" :key="i" class="btnItem___21_fq btnItemActive">{{ top }}</div>
+                                        <!-- btnItemActive -->
+                                        <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
                                     </div>
                                     <!-- number -->
                                     <div class="flex___16JOt selectNumBody___9bXff">
                                         <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
-                                            <div class="selectNumItem___3nDoA selectNumItemActive">{{ btm }}</div>
+                                            <!-- selectNumItemActive -->
+                                            <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn(index,j)">{{ j }}</div>
                                         </div>
                                     </div>
                                     <!--  -->
-                                    <div class="flex___16JOt checkContainer___2-1YR">
-                                        <div class v-for="(bt, k) in 10" :key="k">
-                                            <div class="checkBox___2jX8D iconChecked___1tkhj iconCheck___2HmbD"></div>
+                                    <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
+                                        <div class v-for="(bt, k) in titleArr" :key="k">
+                                            <!-- iconChecked___1tkhj -->
+                                            <div class="checkBox___2jX8D iconCheck___2HmbD"></div>
                                             {{bt}}
                                         </div>
                                     </div>
@@ -141,25 +144,65 @@
                 </div>
             </div>
             <div class="footerContainer___qA5nn">
-                <div class="theme2___13ElA undefined button___3xxsI">清空</div>
+                <div class="theme2___13ElA undefined button___3xxsI" v-on:click="clearUserArr">清空</div>
                 <div class="flex___16JOt betInfoContainer___1hnNI">
-                    <div class="betText___3JQwN">4545646546546</div>
-                    <div>共845注<span class="totalMoney___1N9Cj">541元</span></div>
+                    <div class="betText___3JQwN">{{ bettingInfo.number }}</div>
+                    <div>共{{ bettingInfo.bettingNumber }}注<span class="totalMoney___1N9Cj">{{ bettingInfo.allMoney }}元</span></div>
                 </div>
-                <div class="theme1___341L1 undefined button___3xxsI">确定</div>
+                <div class="theme1___341L1 undefined button___3xxsI" v-on:click="setBettingFn">确定</div>
+            </div>
+        </div>
+        <div class="Mask scale_0">
+            <div class="am-modal-wrap">
+                <div class="am-modal-content">
+                    <div class="am-modal-header"><div class="am-modal-title">注单设定</div></div>
+                    <div class="am-modal-body">
+                        <div class="betBaseContainer">
+                            <p class="betBaseContainer_p" v-if="bettingInfo.rate!=null">最高赔率：{{ bettingInfo.rate }}</p>
+                            <div class="flex___16JOt moneyInfo___1K8xW">
+                                <div class="jine">单注金额：</div>
+                                <div class="am-list-item am-input-item am-list-item-middle moneyBase___2PFgO am-input-focus am-input-android" style="width:34%">
+                                    <div class="am-list-line">
+                                        <div class="am-input-control">
+                                            <!-- <input maxlength="7" type="text" v-on:input="getSingleAmount" v-on:focus="fa" v-model="SingleAmount" pattern="[0-9]*" onkeyup="value=value.replace(/[^0-9]/g,'')" onpaste="value=value.replace(/[^0-9]/g,'')" oncontextmenu="value=value.replace(/[^0-9]/g,'')"> -->
+                                            <input type="text" class="j_Amount" v-on:input="ononeMoney($event)" v-model="oneMoney" onkeyup="value=value.replace(/[^0-9]/g,'')" onpaste="value=value.replace(/[^0-9]/g,'')" oncontextmenu="value=value.replace(/[^0-9]/g,'')">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="selectMode___3rpny">
+                                    <!-- modeItemActive -->
+                                    <div class="modeItem___1u_Tu" :class="YuanAngle==1 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(1)">元</div>
+                                    <div class="modeItem___1u_Tu" :class="YuanAngle==0.1 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(0.1)">角</div>
+                                    <div class="modeItem___1u_Tu" :class="YuanAngle==0.01 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(0.01)">分</div>
+                                    <div class="modeItem___1u_Tu" :class="YuanAngle==0.001 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(0.001)">厘</div>
+                                </div>
+                            </div>
+                            <div class="selectMoney">
+                                <!-- modeItemActive -->
+                                <button v-for="(d,i) in SingleAmountArr" :key="i" :class="SingleAmount==d ? 'modeItemActive' : ''" v-on:click="selSingleAmount(d)">{{ d }}</button>
+                            </div>
+                            <div class="textInfo">
+                                <p>注数：{{ bettingInfo.bettingNumber }}</p>
+                                <p>总金额：{{ bettingInfo.allMoney }}元</p>
+                                <p>单注最小金额为<span class="maxBonus">0.01</span>元</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-modal-footer">
+                        <div class="am-modal-button-group-h">
+                            <button class="am-modal-button" v-on:click="setBetting(0)">取消</button>
+                            <button class="am-modal-button" v-on:click="toShoppingCart()">确定</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
 import LotteryLayer from "@/components/lotteryLayer.vue";
-import {
-    GetPersonalInfo,
-    getLotteryOdds,
-    getLastOneNumber,
-    getNextTimeStage,
-    getLastOpenNumber
-} from "@/axios/api.js";
+import { GetPersonalInfo,getLotteryOdds,getLastOneNumber,getNextTimeStage,getLastOpenNumber} from "@/axios/api.js";
+import { singleSelect,multipleSelect } from "@/assets/js/ssc.js"
 import { mapState } from "vuex";
 export default {
     name: "SSC",
@@ -167,19 +210,52 @@ export default {
         return {
             NavOne_index:0,
             NavTwo_index:1,
-            NavTwoFont:0,
-            playData:null, //玩法数据
-            tenIssuesData:null, //近十期数据
-            NavTwoData:null, //二级菜单数据
+            NavOneData:null,//默认一级菜单数据
+            NavTwoData:null,//默认二级菜单数据
+            NavTwoFont:'复式',
+            // 获取的数据
+            data:{
+                lastOpenNumber:null, //近十期开奖号码数据
+                thisOpenTottery:null, //当前期数数据
+                lastOneNumber:null, //上一期开奖号码数据
+            },
+            hms:{
+                hour:0,
+                minute:0,
+                second:0,
+                totalSecond:0, //总秒数
+            },
+            SingleAmountArr:[10,50,100,200,500,1000,5000,10000,50000],
+            SingleAmount:0,
+            YuanAngle:1,
             selectMuen:false, //菜单打开关闭
             assistant:false, //购彩助手
+            time:null, //倒计时
+            titleArr:['万位','千位','百位','十位','个位'],
+            footerArr:['全','大','小','单','双','清'],
+            userArr:[[],[],[],[],[]],
             tableTop:0,
-            hms: {
-                hour: 0,
-                minute: 0,
-                second: 0
+            DesignationArr:[
+                {'num':null},
+                {'num':null},
+                {'num':null},
+                {'num':null},
+                {'num':null},
+            ],
+            oneMoney:2,//可操作单注金额
+            // 投注信息
+            bettingInfo:{
+                number:'',
+                allMoney:0, //总金额
+                singleMoney:2, //单注金额
+                bettingNumber:0, //注数
+                setMultipleNumber:1, //投注倍数
+                rate:null, //默认赔率
+                odd_play:null, //默认玩法
             },
             loginInfo:{},
+            myObj:[],
+            myJson:[],
             id: '',
             title: '',
         };
@@ -200,46 +276,74 @@ export default {
         this.id = this.$route.query.id
         this.title = this.$route.query.title
         this.getPlayingData();
-        this.getLastOpenNumber();
+        this.getLastOpenNumber(); //近十期
+        this.getNextTimeStage(); //下一期开奖时间
     },
     methods: {
         // 一级菜单选择
         selectOneNav:function(data,index){
             this.NavOne_index = index;
-            this.NavTwoFont = 0;
-            // this.NavTwo_index = data.play_rule[0].odds[0].id;
             this.NavTwoData = data.play_rule;
         },
         // 二级菜单选择
         selectTwoNav:function(data,k){
-            this.NavTwoFont = k;
+            this.NavTwoFullData = data;
+            this.NavTwoFont = data.rule;
             this.NavTwo_index = data.id;
+            this.bettingInfo.rate = data.rate;
             this.selectMuen = false;
+            this.bettingInfo.odd_play = data.odd_play;
             console.log(data);
         },
         // show hide 期次
-      showQiCiTable() {
-        let qiCiHeight = $("#qiCiHeight").height()
-        if (this.tableTop <= 0) {
-            this.tableTop = qiCiHeight;
-            $('.dropIcon___3fbhG').css('transform','rotate(180deg)');
-            this.getLastOpenNumber();
-        } else {
-            this.tableTop = 0;
-            $('.dropIcon___3fbhG').css('transform','rotate(0deg)');
-        }
-      },
+        showQiCiTable() {
+            let qiCiHeight = $("#qiCiHeight").height()
+            if (this.tableTop <= 0) {
+                this.tableTop = qiCiHeight;
+                $('.dropIcon___3fbhG').css('transform','rotate(180deg)');
+                this.getLastOpenNumber();
+            } else {
+                this.tableTop = 0;
+                $('.dropIcon___3fbhG').css('transform','rotate(0deg)');
+            }
+        },
+        ononeMoney:function(e){
+            console.log(e.data)
+        },
+        setBetting:function(){
+            $('.Mask').removeClass('scale_1');
+        },
+        setBettingFn:function(){
+            $('.Mask').addClass('scale_1');
+        },
+        // 切换圆角分厘
+        setYuanAngle:function(index){
+            const singleMoney = this.oneMoney;
+            this.YuanAngle = index;
+            // this.setMoneyNumber_index = index;
+            switch (index) {
+                case 0:
+                    this.bettingInfo.singleMoney = singleMoney*1;
+                break;
+                case 1:
+                    this.bettingInfo.singleMoney = singleMoney*0.1;
+                break;
+                case 2:
+                    this.bettingInfo.singleMoney = singleMoney*0.01;
+                break;
+                case 3:
+                    this.bettingInfo.singleMoney = singleMoney*0.001;
+                break;
+            }
+            this.bettingInfo.allMoney = (this.bettingInfo.singleMoney*this.bettingInfo.bettingNumber)*this.bettingInfo.setMultipleNumber;
+        },
         // 打开菜单
         openMuen:function(){
             this.selectMuen = true;
         },
         // 购彩助手
         gczs:function(a){
-            if(a){
-                this.assistant = true;
-            }else{
-                this.assistant = false;
-            }
+            a ? this.assistant=true : this.assistant=false;
         },
         returnFn:function(){
             let me = this;
@@ -255,14 +359,48 @@ export default {
                 me.$router.back(-1);
             }
         },
+        // 单选
+        singleSelectFn:function(y,x){
+            switch (this.NavTwo_index) {
+                // 玩法是汉字的情况
+                case 6:case 46:case 52:case 81:case 82:case 83:case 84:case 85:case 86:case 87:case 88:case 89:case 90:
+                    singleSelectChinese(e,y,x,this.$data);
+                break;
+                default:
+                    singleSelect(y,x,this.$data);
+                break;
+            }
+        },
+        // 多选
+        multipleSelectFn(e,y,x){
+            switch (this.NavTwo_index) {
+                case 6:
+                    this.clearUserArr();
+                    this.userArrChinese = [[],[]];
+                break;
+                default:
+                    multipleSelect(e,y,x,this.$data);
+                break;
+            }
+        },
+        clearUserArr:function(){
+            this.userArr = [[],[],[],[],[]];
+            for (let i = 0; i < 5; i++) {
+                this.DesignationArr[i].num = null;
+            }
+        },
         // 获取玩法数据
         getPlayingData:function() {
             const loading = this.$loading();
             getLotteryOdds({'token': this.loginInfo.token,'uid': this.loginInfo.id,'cate': this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
-                    this.playData = res.data;
+                    this.NavOneData = res.data;
                     this.NavTwoData = res.data[0].play_rule;
+                    this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
+                    this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
+                    // console.log('一级',this.NavOneData)
+                    // console.log('二级',this.NavTwoData)
                     loading.close();
                 } else {
                     loading.close();
@@ -276,12 +414,15 @@ export default {
         },
         // 获取最近10期结果
         getLastOpenNumber:function() {
+            const loading = this.$loading();
             getLastOpenNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
-                    this.tenIssuesData = res.data
+                    this.data.lastOpenNumber = res.data;
+                    // loading.close();
                 } else {
-                    console.log('请求出错:', res);
+                    console.log(res.msg);
+                    loading.close();
                 }
             })
         },
@@ -290,9 +431,9 @@ export default {
             getLastOneNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id,stage: parseInt(next_stage)-1})
             .then(res => {
                 if (res.ret == 200) {
-                    this.lastOneData = res.data[0];
+                    this.data.lastOneNumber = res.data[0];
                 } else {
-                    console.log('请求出错:', res);
+                    console.log(res.msg);
                 }
                 // this.getLastOpenNumber()
             })
@@ -302,11 +443,37 @@ export default {
             getNextTimeStage({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
-                    this.nextTimeData = res.data;
+                    this.data.thisOpenTottery = res.data;
+                    this.thisTermTime();
+                    this.getLastOneNumber(this.data.thisOpenTottery.next_stage);
                 } else {
-                    console.log('请求出错:', res);
+                    console.log(res.msg);
                 }
             })
+        },
+        // 当前期数倒计时
+        thisTermTime:function(){
+            let c = this.data.thisOpenTottery.open_time;
+            this.time = setInterval(() => {
+                this.hms.hour = (Math.floor((c/3600)%24));
+                this.hms.minute = (Math.floor((c/60)%60));
+                this.hms.second = (Math.floor(c%60));
+                if(this.hms.hour<10){
+                    this.hms.hour = '0'+this.hms.hour;
+                }
+                if(this.hms.minute<10){
+                    this.hms.minute = '0'+this.hms.minute;
+                }
+                if(this.hms.second<10){
+                    this.hms.second = '0'+this.hms.second;
+                }
+                // console.log(this.hms.hour,this.hms.minute,this.hms.second)
+                c--;
+                if(c<1){
+                    clearInterval(this.time);
+                    this.getNextTimeStage();
+                }
+            }, 1000);
         },
     }
 };

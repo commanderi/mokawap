@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     loginInfo: loginInfo,
     host: 'http://api.vs04o.cn/',
     BettingData: [],
+    getCates:null,
   },
   // mutations主要是修改store存储的值(同步)
   mutations:{

@@ -182,7 +182,7 @@
   import Header from '@/components/header.vue'
   import TabBar from '@/components/tabBar.vue'
   import { mapState } from 'vuex'
-  import { GetBanners, GetNotice, GetLatestWinnersList, GetCates, GetThirdUrl, GetKefu } from '@/axios/api.js'
+  import { GetBanners, GetNotice, GetLatestWinnersList, GetCates, GetThirdUrl, GetKefu, getLotteryOdds } from '@/axios/api.js'
   export default {
     name: 'index',
     data () {
@@ -237,6 +237,7 @@
       this.getLatestWinnersList()
       this.getCates()
       this.getThirdUrl()
+      this.getPlayingData();
       let isNotice = sessionStorage.getItem('isNotice')
       if(isNotice==null) {
         // 第一次进入网站 show notice
@@ -277,6 +278,7 @@
           this.changePage('/iframe', {'url':url});
         }
       },
+
       // 购彩详情
       lotteryPageFn(item) {
         if(this.loginInfo){
