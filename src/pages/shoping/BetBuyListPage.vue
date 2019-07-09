@@ -19,7 +19,7 @@
         <div class="content">
             <div class="lotteryBetTimer">
                 <div class="flex___16JOt carTopContainer___3jVtM">
-                    <div><div class="currentIssueId___1xhbZ" v-if="thisperDta!==null">距{{ thisperDta.next_stage }}期截止</div><div class="timer___1tSLt">{{ hms.hour }}:{{ hms.minute }}:{{ hms.second }}</div></div>
+                    <div><div class="currentIssueId___1xhbZ" v-if="thisperData!==null">距{{ thisperData.next_stage }}期截止</div><div class="timer___1tSLt">{{ hms.hour }}:{{ hms.minute }}:{{ hms.second }}</div></div>
                     <div class="flex___16JOt balanceContainer___2hZR6"><div>你的余额</div><div class="money___1ePqq"><span>{{ leftoverMoney }}元</span><div class="iconRefresh___1zlW0"></div></div></div>
                 </div>
                 <div class="betList___3egKT">
@@ -65,7 +65,7 @@ export default {
     name: 'BetBuyListPage',
     data() {
         return {
-            thisperDta:null,
+            thisperData:null,
             hms:{hour:0,minute:0,second:0}, //时分秒
             time:null, //当前期数倒计时函数
             allnote:null, //总注数
@@ -100,6 +100,7 @@ export default {
             this.BettingData[i].money = (this.BettingData[i].one_money*this.BettingData[i].note)*this.multiple;
             this.allmoney += ((this.BettingData[i].one_money*this.BettingData[i].note)*this.multiple);
         }
+        console.log(this.BettingData)
     },
     watch:{
         BettingData(){
@@ -130,7 +131,7 @@ export default {
             }else{
                 getNextTimeStage({'token':this.loginInfo.token,'uid':this.loginInfo.id,'cate':this.$route.query.id}).then(res => {
                     if(res.ret==200){
-                        this.thisperDta = res.data;
+                        this.thisperData = res.data;
                         clearInterval(this.time);
                         this.thisTermTime();
                     }else{
@@ -142,7 +143,7 @@ export default {
         },
         // 当前期数倒计时
         thisTermTime:function(){
-            let c = this.thisperDta.open_time;
+            let c = this.thisperData.open_time;
             this.time = setInterval(() => {
                 this.hms.hour = (Math.floor((c/3600)%24));
                 this.hms.minute = (Math.floor((c/60)%60));
@@ -159,7 +160,7 @@ export default {
                 c--;
                 if(c<1){
                     clearInterval(this.time);
-                    this.$alert('第'+this.thisperDta.next_stage+'期投注已截止,投注时请注意期号变化', '注意');
+                    this.$alert('第'+this.thisperData.next_stage+'期投注已截止,投注时请注意期号变化', '注意');
                     this.getThisTime();
                 }
             }, 1000);

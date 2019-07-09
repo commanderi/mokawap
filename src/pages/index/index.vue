@@ -237,7 +237,7 @@
       this.getLatestWinnersList()
       this.getCates()
       this.getThirdUrl()
-      this.getPlayingData();
+    //   this.getPlayingData();
       let isNotice = sessionStorage.getItem('isNotice')
       if(isNotice==null) {
         // 第一次进入网站 show notice

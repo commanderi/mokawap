@@ -109,37 +109,132 @@
                         <div class="dropIcon___3fbhG" @click="showQiCiTable"></div>
                         <div class="container1___3TtZg">
                             <div class="balance___3VTdb">余额：5555元</div>
-                            <div class="returnCat">返回购物车<i class="lf_num">k</i></div>
+                            <div class="returnCat" @click="changePage('/BetBuyListPage', {id: id, title: title})">返回购物车<i class="lf_num">{{ BettingData.length }}</i></div>
                         </div>
                     </div>
-                    <div class="betContainer___2sw-n">
-                        <ul>
-                            <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
-                                <div class="title___3GwzV">{{ titleArr[index] }}</div>
-                                <div class="selectItemRight___3lZk3">
-                                    <!-- font -->
-                                    <div class="flex___16JOt btnContainer___2HDeL">
-                                        <!-- btnItemActive -->
-                                        <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                    <!-- 五星 -->
+                    <div class="betContainer___2sw-n" v-if="NavOne_index==0">
+                        <template v-if="NavTwo_index==1">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
+                                    <div class="title___3GwzV">{{ titleArr[index] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
+                                            <div class v-for="(bt, k) in titleArr" :key="k">
+                                                <div class="checkBox___2jX8D iconCheck___2HmbD"></div>
+                                                {{bt}}
+                                            </div>
+                                        </div> -->
                                     </div>
-                                    <!-- number -->
-                                    <div class="flex___16JOt selectNumBody___9bXff">
-                                        <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
-                                            <!-- selectNumItemActive -->
-                                            <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn(index,j)">{{ j }}</div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==2">
+                            <div class="betContainer_font">
+                                <p>1.多注号码请用空格隔开</p>
+                                <p>2.可复制号码粘贴到输入框</p>
+                                <textarea class="metextarea" cols="100" rows="8" v-model="textareaData" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==3||NavTwo_index==4||NavTwo_index==5">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">选号</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <!--  -->
-                                    <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
-                                        <div class v-for="(bt, k) in titleArr" :key="k">
-                                            <!-- iconChecked___1tkhj -->
-                                            <div class="checkBox___2jX8D iconCheck___2HmbD"></div>
-                                            {{bt}}
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==6">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">和值</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in ['大','小','单','双']" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ btm }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==7">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">选号</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==8||NavTwo_index==9||NavTwo_index==10||NavTwo_index==11||NavTwo_index==12">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 2" :key="index">
+                                    <div class="title___3GwzV" v-if="NavTwo_index==10">{{ item==1 ? '三重号' : '单号' }}</div>
+                                    <div class="title___3GwzV" v-else-if="NavTwo_index==11">{{ item==1 ? '三重号' : '二重号' }}</div>
+                                    <div class="title___3GwzV" v-else-if="NavTwo_index==12">{{ item==1 ? '四重号' : '单　号' }}</div>
+                                    <div class="title___3GwzV" v-else>{{ item==1 ? '二重号' : '单号' }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+                    <!-- 四星 -->
+                    <div class="betContainer___2sw-n" v-if="NavOne_index==1">
+                        <template v-if="NavTwo_index==13">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 4" :key="index">
+                                    <div class="title___3GwzV">{{ titleArr[index+1] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -152,6 +247,7 @@
                 <div class="theme1___341L1 undefined button___3xxsI" v-on:click="setBettingFn">确定</div>
             </div>
         </div>
+        <!-- 设置单注金额 -->
         <div class="Mask scale_0">
             <div class="am-modal-wrap">
                 <div class="am-modal-content">
@@ -184,7 +280,7 @@
                             <div class="textInfo">
                                 <p>注数：{{ bettingInfo.bettingNumber }}</p>
                                 <p>总金额：{{ bettingInfo.allMoney }}元</p>
-                                <p>单注最小金额为<span class="maxBonus">0.01</span>元</p>
+                                <p>单注最小金额为<span class="maxBonus">0.001</span>元</p>
                             </div>
                         </div>
                     </div>
@@ -202,7 +298,7 @@
 <script>
 import LotteryLayer from "@/components/lotteryLayer.vue";
 import { GetPersonalInfo,getLotteryOdds,getLastOneNumber,getNextTimeStage,getLastOpenNumber} from "@/axios/api.js";
-import { singleSelect,multipleSelect } from "@/assets/js/ssc.js"
+import { singleSelect,multipleSelect,getTextareaData,singleSelectChinese } from "@/assets/js/ssc.js"
 import { mapState } from "vuex";
 export default {
     name: "SSC",
@@ -234,7 +330,9 @@ export default {
             titleArr:['万位','千位','百位','十位','个位'],
             footerArr:['全','大','小','单','双','清'],
             userArr:[[],[],[],[],[]],
+            userArrChinese:[[],[]],
             tableTop:0,
+            textareaData:null, //单式
             DesignationArr:[
                 {'num':null},
                 {'num':null},
@@ -284,6 +382,7 @@ export default {
         selectOneNav:function(data,index){
             this.NavOne_index = index;
             this.NavTwoData = data.play_rule;
+            this.clearUserArr();
         },
         // 二级菜单选择
         selectTwoNav:function(data,k){
@@ -293,6 +392,7 @@ export default {
             this.bettingInfo.rate = data.rate;
             this.selectMuen = false;
             this.bettingInfo.odd_play = data.odd_play;
+            this.clearUserArr();
             console.log(data);
         },
         // show hide 期次
@@ -316,25 +416,15 @@ export default {
         setBettingFn:function(){
             $('.Mask').addClass('scale_1');
         },
+        selSingleAmount:function(d){
+            this.oneMoney = d;
+            this.setYuanAngle(1);
+        },
         // 切换圆角分厘
         setYuanAngle:function(index){
             const singleMoney = this.oneMoney;
             this.YuanAngle = index;
-            // this.setMoneyNumber_index = index;
-            switch (index) {
-                case 0:
-                    this.bettingInfo.singleMoney = singleMoney*1;
-                break;
-                case 1:
-                    this.bettingInfo.singleMoney = singleMoney*0.1;
-                break;
-                case 2:
-                    this.bettingInfo.singleMoney = singleMoney*0.01;
-                break;
-                case 3:
-                    this.bettingInfo.singleMoney = singleMoney*0.001;
-                break;
-            }
+            this.bettingInfo.singleMoney = singleMoney*index;
             this.bettingInfo.allMoney = (this.bettingInfo.singleMoney*this.bettingInfo.bettingNumber)*this.bettingInfo.setMultipleNumber;
         },
         // 打开菜单
@@ -359,15 +449,18 @@ export default {
                 me.$router.back(-1);
             }
         },
+        textareaDataFn:function(){
+            getTextareaData(this);
+        },
         // 单选
-        singleSelectFn:function(y,x){
+        singleSelectFn:function(e,y,x){
             switch (this.NavTwo_index) {
                 // 玩法是汉字的情况
                 case 6:case 46:case 52:case 81:case 82:case 83:case 84:case 85:case 86:case 87:case 88:case 89:case 90:
                     singleSelectChinese(e,y,x,this.$data);
                 break;
                 default:
-                    singleSelect(y,x,this.$data);
+                    singleSelect(e,y,x,this.$data);
                 break;
             }
         },
@@ -383,15 +476,37 @@ export default {
                 break;
             }
         },
+        // 跳转购物车
+        toShoppingCart:function(){
+            let list = {
+                number:this.bettingInfo.number,
+                odd_play:this.bettingInfo.odd_play,
+                odd_id:this.NavTwo_index,
+                note:this.bettingInfo.bettingNumber,
+                money:this.bettingInfo.allMoney,
+                one_money:this.bettingInfo.singleMoney,
+                rate:this.bettingInfo.rate,
+                multiple:this.bettingInfo.setMultipleNumber,
+                odd_title:this.NavOneData[this.NavOne_index].name+'-'+this.NavTwoFont,
+            };
+            this.$store.commit("increment",list);
+            this.$router.push({ path:'/BetBuyListPage', query:{id:this.id,title:this.title}});
+        },
+        // 清除选择的投注数据
         clearUserArr:function(){
             this.userArr = [[],[],[],[],[]];
+            this.userArrChinese = [[],[]];
+            this.bettingInfo.number = '';
+            this.bettingInfo.allMoney = 0;
+            this.textareaData = null;
+            this.bettingInfo.bettingNumber = 0;
             for (let i = 0; i < 5; i++) {
                 this.DesignationArr[i].num = null;
             }
         },
         // 获取玩法数据
         getPlayingData:function() {
-            const loading = this.$loading();
+            // const loading = this.$loading();
             getLotteryOdds({'token': this.loginInfo.token,'uid': this.loginInfo.id,'cate': this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
@@ -401,9 +516,9 @@ export default {
                     this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
                     // console.log('一级',this.NavOneData)
                     // console.log('二级',this.NavTwoData)
-                    loading.close();
+                    // loading.close();
                 } else {
-                    loading.close();
+                    // loading.close();
                     this.$alert(res, '请求出错').then((result) => {
                         if(result){
                             this.returnFn();
@@ -419,7 +534,7 @@ export default {
             .then(res => {
                 if (res.ret == 200) {
                     this.data.lastOpenNumber = res.data;
-                    // loading.close();
+                    loading.close();
                 } else {
                     console.log(res.msg);
                     loading.close();
