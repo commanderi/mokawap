@@ -109,7 +109,7 @@
                         <div class="dropIcon___3fbhG" @click="showQiCiTable"></div>
                         <div class="container1___3TtZg">
                             <div class="balance___3VTdb">余额：5555元</div>
-                            <div class="returnCat" @click="changePage('/BetBuyListPage', {id: id, title: title})">返回购物车<i class="lf_num">{{ BettingData.length }}</i></div>
+                            <div class="returnCat" v-show='!BettingData.length==0' @click="changePage('/BetBuyListPage', {id: id, title: title})">返回购物车<i class="lf_num">{{ BettingData.length }}</i></div>
                         </div>
                     </div>
                     <!-- 五星 -->
@@ -127,21 +127,15 @@
                                                 <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
                                             </div>
                                         </div>
-                                        <!-- <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
-                                            <div class v-for="(bt, k) in titleArr" :key="k">
-                                                <div class="checkBox___2jX8D iconCheck___2HmbD"></div>
-                                                {{bt}}
-                                            </div>
-                                        </div> -->
                                     </div>
                                 </li>
                             </ul>
                         </template>
                         <template v-else-if="NavTwo_index==2">
                             <div class="betContainer_font">
-                                <p>1.多注号码请用空格隔开</p>
-                                <p>2.可复制号码粘贴到输入框</p>
-                                <textarea class="metextarea" cols="100" rows="8" v-model="textareaData" v-on:input="textareaDataFn"></textarea>
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" v-model="textareaData" placeholder="示列:01234 12345" v-on:input="textareaDataFn"></textarea>
                             </div>
                         </template>
                         <template v-else-if="NavTwo_index==3||NavTwo_index==4||NavTwo_index==5">
@@ -217,11 +211,11 @@
                         </template>
                     </div>
                     <!-- 四星 -->
-                    <div class="betContainer___2sw-n" v-if="NavOne_index==1">
-                        <template v-if="NavTwo_index==13">
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==1">
+                        <template v-if="NavTwo_index==13||NavTwo_index==19">
                             <ul>
                                 <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 4" :key="index">
-                                    <div class="title___3GwzV">{{ titleArr[index+1] }}</div>
+                                    <div class="title___3GwzV">{{ NavTwo_index==13 ? titleArr[index+1] : titleArr[index] }}</div>
                                     <div class="selectItemRight___3lZk3">
                                         <div class="flex___16JOt btnContainer___2HDeL">
                                             <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
@@ -235,6 +229,385 @@
                                 </li>
                             </ul>
                         </template>
+                        <template v-else-if="NavTwo_index==14||NavTwo_index==20">
+                            <div class="betContainer_font">
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" v-model="textareaData" placeholder="示列:0124 1234" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==15||NavTwo_index==17||NavTwo_index==21||NavTwo_index==23">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV" v-if="NavTwo_index==15||NavTwo_index==21">选号</div>
+                                    <div class="title___3GwzV" v-else-if="NavTwo_index==17||NavTwo_index==23">二重号</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==16||NavTwo_index==18||NavTwo_index==22||NavTwo_index==24">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 2" :key="index">
+                                    <div class="title___3GwzV" v-if="NavTwo_index==18||NavTwo_index==24">{{ item==1 ? '三重号' : '单号' }}</div>
+                                    <div class="title___3GwzV" v-else-if="NavTwo_index==16||NavTwo_index==22">{{ item==1 ? '二重号' : '单号' }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+                    <!-- 后三、中三、前三 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==2||NavOne_index==3||NavOne_index==4">
+                        <template v-if="NavTwo_index==25||NavTwo_index==31||NavTwo_index==37">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 3" :key="index">
+                                    <div class="title___3GwzV">{{ NavTwo_index==25 ? titleArr[index+2] : (NavTwo_index==37 ? titleArr[index] : titleArr[index+1]) }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==26||NavTwo_index==30||NavTwo_index==32||NavTwo_index==36||NavTwo_index==38||NavTwo_index==42">
+                            <div class="betContainer_font">
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" v-model="textareaData" placeholder="示列:012 123" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==27||NavTwo_index==33||NavTwo_index==39">
+                            <div class="lf_buttonxuan">
+                                <button v-for="(btm, j) in 28" :key="j" :class="[userArr[0].indexOf(j)>-1 ? 'selectNumItem_button' : '']" v-on:click="singleSelectFn($event,0,j)">{{ j }}</button>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==28||NavTwo_index==29||NavTwo_index==34||NavTwo_index==35||NavTwo_index==40||NavTwo_index==41">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">{{ NavTwo_index==28||NavTwo_index==34||NavTwo_index==40 ? '组三' : '组六' }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+                    <!-- 后二、前二 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==5||NavOne_index==6">
+                        <template v-if="NavTwo_index==43||NavTwo_index==49">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 2" :key="index">
+                                    <div class="title___3GwzV">{{ NavTwo_index==43 ? titleArr[index+3] : titleArr[index] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==44||NavTwo_index==50||NavTwo_index==48||NavTwo_index==54">
+                            <div class="betContainer_font">
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" v-model="textareaData" placeholder="示列:01 12" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==45||NavTwo_index==51">
+                            <div class="lf_buttonxuan">
+                                <button v-for="(btm, j) in 19" :key="j" :class="[userArr[0].indexOf(j)>-1 ? 'selectNumItem_button' : '']" v-on:click="singleSelectFn($event,0,j)">{{ j }}</button>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==47||NavTwo_index==53">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">组选</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==46||NavTwo_index==52">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 2" :key="index">
+                                    <div class="title___3GwzV">和值</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in ['大','小','单','双']" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ btm }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+                    <!-- 定位胆 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==7">
+                        <template>
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
+                                    <div class="title___3GwzV">{{ titleArr[index] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+                    <!-- 不订胆 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==8">
+                        <template>
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">不定胆</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+                    <!-- 任二 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==9">
+                        <template v-if="NavTwo_index==62">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
+                                    <div class="title___3GwzV">{{ titleArr[index] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==63">
+                            <div class="betContainer_font">
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" type='tel' v-model="textareaData" placeholder="示列:01 12" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                            <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
+                                <div class v-for="(bt, k) in titleArr" :key="k" v-on:click="selectClassFn($event,k)">
+                                    <div :class="['checkBox___2jX8D',rxArr.indexOf(k)===-1 ? 'iconCheck___2HmbD' : 'iconChecked___1tkhj']"></div>
+                                    <span class="checkBox_span">{{bt}}</span>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==64">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">号码</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="flex___16JOt checkContainer___2-1YR">
+                                <div class v-for="(bt, k) in titleArr" :key="k" v-on:click="selectClassFn($event,k)">
+                                    <div :class="['checkBox___2jX8D',rxArr.indexOf(k)===-1 ? 'iconCheck___2HmbD' : 'iconChecked___1tkhj']"></div>
+                                    <span class="checkBox_span">{{bt}}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- 任三 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==10">
+                        <template v-if="NavTwo_index==65">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
+                                    <div class="title___3GwzV">{{ titleArr[index] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="NavTwo_index==66||NavTwo_index==69">
+                            <div class="betContainer_font">
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" type='tel' v-model="textareaData" placeholder="示列:012 123" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                            <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
+                                <div class v-for="(bt, k) in titleArr" :key="k" v-on:click="selectClassFn($event,k)">
+                                    <div :class="['checkBox___2jX8D',rxArr.indexOf(k)===-1 ? 'iconCheck___2HmbD' : 'iconChecked___1tkhj']"></div>
+                                    <span class="checkBox_span">{{bt}}</span>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else-if="NavTwo_index==67||NavTwo_index==68">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                    <div class="title___3GwzV">号码</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="flex___16JOt checkContainer___2-1YR">
+                                <div class v-for="(bt, k) in titleArr" :key="k" v-on:click="selectClassFn($event,k)">
+                                    <div :class="['checkBox___2jX8D',rxArr.indexOf(k)===-1 ? 'iconCheck___2HmbD' : 'iconChecked___1tkhj']"></div>
+                                    <span class="checkBox_span">{{bt}}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- 任四 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==11">
+                        <template v-if="NavTwo_index==70">
+                            <ul>
+                                <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 5" :key="index">
+                                    <div class="title___3GwzV">{{ titleArr[index] }}</div>
+                                    <div class="selectItemRight___3lZk3">
+                                        <div class="flex___16JOt btnContainer___2HDeL">
+                                            <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                        </div>
+                                        <div class="flex___16JOt selectNumBody___9bXff">
+                                            <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                                <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else>
+                            <div class="betContainer_font">
+                                <p>{{ tipArr[0] }}</p>
+                                <p>{{ tipArr[1] }}</p>
+                                <textarea class="metextarea" cols="100" rows="8" type='tel' v-model="textareaData" placeholder="示列:0123 1234" v-on:input="textareaDataFn"></textarea>
+                            </div>
+                            <div class="flex___16JOt checkContainer___2-1YR" v-if="NavTwo_index==63||NavTwo_index==64||NavTwo_index==66||NavTwo_index==67||NavTwo_index==68||NavTwo_index==69||NavTwo_index==71">
+                                <div class v-for="(bt, k) in titleArr" :key="k" v-on:click="selectClassFn($event,k)">
+                                    <div :class="['checkBox___2jX8D',rxArr.indexOf(k)===-1 ? 'iconCheck___2HmbD' : 'iconChecked___1tkhj']"></div>
+                                    <span class="checkBox_span">{{bt}}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- 趣味 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==12">
+                        <ul>
+                            <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                <div class="title___3GwzV">选号</div>
+                                <div class="selectItemRight___3lZk3">
+                                    <div class="flex___16JOt btnContainer___2HDeL">
+                                        <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                    </div>
+                                    <div class="flex___16JOt selectNumBody___9bXff">
+                                        <div class="selectMark___1Dj8V" v-for="(btm, j) in 10" :key="j">
+                                            <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ j }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 龙虎 -->
+                    <div class="betContainer___2sw-n" v-else-if="NavOne_index==13">
+                        <ul>
+                            <li class="flex___16JOt numContainer___K07vd" v-for="(item, index) in 1" :key="index">
+                                <div class="title___3GwzV">龙虎</div>
+                                <div class="selectItemRight___3lZk3">
+                                    <div class="flex___16JOt btnContainer___2HDeL">
+                                        <div v-for="(top, i) in footerArr" :key="i" :class="['btnItem___21_fq',DesignationArr[index].num==i ? 'btnItemActive' : '']" v-on:click="multipleSelectFn($event,index,i)">{{ top }}</div>
+                                    </div>
+                                    <div class="flex___16JOt selectNumBody___9bXff">
+                                        <div class="selectMark___1Dj8V" v-for="(btm, j) in ['龙','虎','和']" :key="j">
+                                            <div :class="['selectNumItem___3nDoA',userArr[index].indexOf(j)>-1 ? 'selectNumItemActive' : '']" v-on:click="singleSelectFn($event,index,j)">{{ btm }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -298,7 +671,7 @@
 <script>
 import LotteryLayer from "@/components/lotteryLayer.vue";
 import { GetPersonalInfo,getLotteryOdds,getLastOneNumber,getNextTimeStage,getLastOpenNumber} from "@/axios/api.js";
-import { singleSelect,multipleSelect,getTextareaData,singleSelectChinese } from "@/assets/js/ssc.js"
+import { singleSelect,multipleSelect,getTextareaData,singleSelectChinese,selectClass } from "@/assets/js/ssc.js"
 import { mapState } from "vuex";
 export default {
     name: "SSC",
@@ -331,6 +704,8 @@ export default {
             footerArr:['全','大','小','单','双','清'],
             userArr:[[],[],[],[],[]],
             userArrChinese:[[],[]],
+            rxArr:[], //任选
+            userArrLen:0,
             tableTop:0,
             textareaData:null, //单式
             DesignationArr:[
@@ -340,6 +715,7 @@ export default {
                 {'num':null},
                 {'num':null},
             ],
+            tipArr:['1.多注号码请用一个空格隔开','2.可复制号码粘贴到输入框'],
             oneMoney:2,//可操作单注金额
             // 投注信息
             bettingInfo:{
@@ -393,7 +769,7 @@ export default {
             this.selectMuen = false;
             this.bettingInfo.odd_play = data.odd_play;
             this.clearUserArr();
-            console.log(data);
+            console.log(data.id);
         },
         // show hide 期次
         showQiCiTable() {
@@ -414,7 +790,11 @@ export default {
             $('.Mask').removeClass('scale_1');
         },
         setBettingFn:function(){
-            $('.Mask').addClass('scale_1');
+            if(this.bettingInfo.bettingNumber<1){
+                this.$alert("请至少选择一注投注号码", "提示")
+            }else{
+                $('.Mask').addClass('scale_1');
+            }
         },
         selSingleAmount:function(d){
             this.oneMoney = d;
@@ -467,7 +847,8 @@ export default {
         // 多选
         multipleSelectFn(e,y,x){
             switch (this.NavTwo_index) {
-                case 6:
+                // 玩法是汉字的情况
+                case 6:case 46:case 52:case 81:case 82:case 83:case 84:case 85:case 86:case 87:case 88:case 89:case 90:
                     this.clearUserArr();
                     this.userArrChinese = [[],[]];
                 break;
@@ -475,6 +856,10 @@ export default {
                     multipleSelect(e,y,x,this.$data);
                 break;
             }
+        },
+        // 任选234
+        selectClassFn:function(e,index){
+            selectClass(e,index,this.$data);
         },
         // 跳转购物车
         toShoppingCart:function(){
@@ -500,6 +885,20 @@ export default {
             this.bettingInfo.allMoney = 0;
             this.textareaData = null;
             this.bettingInfo.bettingNumber = 0;
+            switch (this.NavTwo_index) {
+                case 63:case 64: //任选2默认选中的
+                    this.rxArr = [3,4];
+                break;
+                case 66:case 67:case 68:case 69: //任选3默认选中的
+                    this.rxArr = [2,3,4];
+                break;
+                case 71: //任选4默认选中的
+                    this.rxArr = [1,2,3,4];
+                break;
+                default:
+                    this.rxArr = [];
+                break;
+            };
             for (let i = 0; i < 5; i++) {
                 this.DesignationArr[i].num = null;
             }
@@ -819,12 +1218,12 @@ export default {
 
 /* */
 .checkContainer___2-1YR {
-    padding: 0.3rem 0;
+    // padding: 0.3rem 0;
     height: 0.4rem;
     -ms-flex-pack: center;
     justify-content: center;
     -ms-flex-align: center;
-    align-items: center;
+    // align-items: center;
     font-size: 0.28rem;
 
     .checkBox___2jX8D {
@@ -836,16 +1235,19 @@ export default {
     .iconCheck___2HmbD {
         background: url(../../../assets/icon_uncheck.png) 50% no-repeat;
         background-size: contain;
-        width: 0.4rem;
-        height: 0.4rem;
+        // width: 0.4rem;
+        // height: 0.4rem;
     }
 
     .iconChecked___1tkhj {
         background: url(../../../assets/icon_checked.png) 50% no-repeat;
         background-size: contain;
-        width: 0.4rem;
-        height: 0.4rem;
+        // width: 0.4rem;
+        // height: 0.4rem;
     }
+}
+.checkBox_span{
+    color: #a09e9e;
 }
 .scrollView___1ZMYS {
     max-height: 2.3rem;

@@ -12,7 +12,7 @@ function getTextareaData(m){
         me.userArr.push(successData[i].map(Number));
         for (let j = 0; j < me.userArr[i].length; j++) {
             if(!reg.test(me.userArr[i][j])){
-                console.log(me.textareaData)
+                console.log(me.textareaData);
                 console.log('请输入阿拉伯数字或正整数');
                 return
             }
@@ -97,6 +97,41 @@ function singleSelect(e,y,x,me) {
         case 11:case 12: // 组选10、组选5
             me.bettingInfo.bettingNumber = getBettingNumber10_15(me,me.NavTwo_index);
         break;
+        case 15:case 21:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,4));
+        break;
+        case 16:case 22:case 18:case 24:
+            me.bettingInfo.bettingNumber = zu12_4(me);
+        break;
+        case 17:case 23:case 47:case 53:case 57:case 59:case 61:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,2));
+        break;
+        case 27:case 33:case 39:
+            me.bettingInfo.bettingNumber = zhixuanhezhi(me);
+        break;
+        case 28:case 34:case 40:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,2))*2;
+        break;
+        case 29:case 35:case 41:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,3));
+        break;
+        case 55:
+            let nums = 0;
+            for (let i = 0; i < 5; i++) {nums += me.userArr[i].length};
+            me.bettingInfo.bettingNumber = nums;
+        break;
+        case 56:case 58:case 60:case 77:case 78:case 79:case 80:
+            me.bettingInfo.bettingNumber = me.userArr[0].length;
+        break;
+        case 62:case 65:case 70:
+            me.bettingInfo.bettingNumber = renxuan2_3_4fs(me);
+        break;
+        case 64:
+            me.bettingInfo.bettingNumber = renxuan2zx(me);
+        break;
+        case 67:case 68:
+            me.bettingInfo.bettingNumber = rxz3z6(me);
+        break;
     }
     me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
     AssemblyData(me,5);
@@ -175,6 +210,38 @@ function multipleSelect(e,y,x,me){
         case 11:case 12: // 组选10、组选5
             me.bettingInfo.bettingNumber = getBettingNumber10_15(me,me.NavTwo_index);
         break;
+        case 15:case 21:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,4));
+        break;
+        case 16:case 22:case 18:case 24:
+            me.bettingInfo.bettingNumber = zu12_4(me);
+        break;
+        case 17:case 23:case 47:case 53:case 57:case 59:case 61:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,2));
+        break;
+        case 28:case 34:case 40:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,2))*2;
+        break;
+        case 29:case 35:case 41:
+            me.bettingInfo.bettingNumber = Math.floor(combination(me.userArr[y].length,3));
+        break;
+        case 55:
+            let nums = 0;
+            for (let i = 0; i < 5; i++) {nums += me.userArr[i].length};
+            me.bettingInfo.bettingNumber = nums;
+        break;
+        case 56:case 58:case 60:case 77:case 78:case 79:case 80:
+            me.bettingInfo.bettingNumber = me.userArr[0].length;
+        break;
+        case 62:case 65:case 70:
+            me.bettingInfo.bettingNumber = renxuan2_3_4fs(me);
+        break;
+        case 64:
+            me.bettingInfo.bettingNumber = renxuan2zx(me);
+        break;
+        case 67:case 68:
+            me.bettingInfo.bettingNumber = rxz3z6(me);
+        break;
     }
     me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
     AssemblyData(me,5);
@@ -182,6 +249,99 @@ function multipleSelect(e,y,x,me){
 };
 export{
     multipleSelect
+}
+// 任选万千百十个选择
+function selectClass(e,index,me){
+    if(me.rxArr.indexOf(index) === -1){
+        me.rxArr.push(index);
+    }else{
+        me.rxArr.splice($.inArray(index,me.rxArr),1);
+    }
+    switch (me.NavTwo_index) {
+        case 64: //任选2
+            me.bettingInfo.bettingNumber = renxuan2zx(me);
+        break;
+        case 67:case 68: //任选3组三组六
+            me.bettingInfo.bettingNumber = rxz3z6(me);
+        break;
+        case 63: //任选2单式
+            if(me.rxArr.length<2){
+                me.rxArr.push(index);
+                alert('至少选择两个');
+            }
+        break;
+        case 66:case 69: //任选3单式、混合组选
+            if(me.rxArr.length<3){
+                me.rxArr.push(index);
+                alert('至少选择三个');
+            }
+        break;
+        case 71: //任选4单式
+            if(me.rxArr.length<4){
+                me.rxArr.push(index);
+                alert('至少选择四个');
+            }
+        break;
+    };
+    switch (me.NavTwo_index) {
+        case 2:
+            me.userArrLen = 5;
+        break;
+        case 14:case 20:case 71:
+            me.userArrLen = 4;
+        break;
+        case 26:case 30:case 32:case 36:case 38:case 42:case 66:case 69:
+            me.userArrLen = 3;
+        break;
+        case 44:case 48:case 50:case 54:case 63:
+            me.userArrLen = 2;
+        break;
+    }
+    for (let i = 0; i < me.userArr.length; i++) {
+        if(me.userArr[i].length!==me.userArrLen){
+            console.log('选择的号码不合法');
+            return
+        }
+    }
+    switch (me.NavTwo_index) {
+        case 63: //任选2单式
+            if(me.rxArr.length==3){
+                me.bettingInfo.bettingNumber = (me.userArr.length*3);
+            }else if(me.rxArr.length==4){
+                me.bettingInfo.bettingNumber = (me.userArr.length*6);
+            }else if(me.rxArr.length==5){
+                me.bettingInfo.bettingNumber = (me.userArr.length*10);
+            }else{
+                me.bettingInfo.bettingNumber = me.userArr.length;
+            }
+        break;
+        case 66:case 69: //任选3单式、混合组选
+            if(me.rxArr.length==4){
+                me.bettingInfo.bettingNumber = (me.userArr.length*4);
+            }else if(me.rxArr.length==5){
+                me.bettingInfo.bettingNumber = (me.userArr.length*10);
+            }else{
+                me.bettingInfo.bettingNumber = me.userArr.length;
+            }
+        break;
+        case 71: //任选4单式
+            if(me.rxArr.length==5){
+                me.bettingInfo.bettingNumber = (me.userArr.length*5);
+            }else{
+                me.bettingInfo.bettingNumber = me.userArr.length;
+            }
+        break;
+        default:
+            me.bettingInfo.bettingNumber = me.userArr.length;
+        break;
+    }
+    me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
+    me.rxArr.sort();
+    AssemblyData(me);
+    // console.log(me.rxArr);
+};
+export{
+    selectClass
 }
 // 组装数据,并将号码添加到底部
 function AssemblyData(me,num){
@@ -263,6 +423,190 @@ function spliceBetNumberArr(arr, num) {
     }
     return arr
 };
+// 任选二组选
+function renxuan2zx(me){
+    var maxplace = 1;
+    var nums = 0;
+    if (me.rxArr.length > 1) {
+        var place = 0;
+        for (var i = 0; i < me.rxArr.length; i++) {
+            if (me.rxArr[i]!='' || me.rxArr[i]!=null) {
+                place++;
+            }
+        }
+        var newsel = me.userArr[0];
+        var m = 2;
+        if (place >= m) {
+            var h = ArrayUtils.ComNum(place, m);
+            if (h > 0) {
+                for (var i = 0; i < maxplace; i++) {
+                    var s = newsel.length;
+                    if (s > 1) {
+                        nums += s * (s - 1) / 2;
+                    }
+                }
+                nums *= h;
+            }
+        }
+    }
+    return nums;
+};
+export{
+    renxuan2zx
+}
+// 任选2、3、4复式
+function renxuan2_3_4fs(me){
+    var nums = 0, tmp_nums = 1,minplace = 0;
+    if (me.NavTwo_index == 62) {
+        minplace = 2;
+    }
+    if (me.NavTwo_index == 65) {
+        minplace = 3;
+    }
+    if (me.NavTwo_index == 70) {
+        minplace = 4;
+    }
+    var newsel = [];
+    for (var i = 0; i < me.userArr.length; i++) {
+        if (me.userArr[i].length != 0) {
+            newsel.push(me.userArr[i]);
+        }
+    }
+    // 最少位数
+    if (newsel.length >= minplace) {
+        var l = ArrayUtils.ComNum(newsel.length, minplace);
+        for (var i = 0; i < l; i++) {
+            tmp_nums = 1;
+            var data = ArrayUtils.ComVal(newsel, minplace, i);
+            for (var j = 0; j < data.length; j++) {
+                tmp_nums *= data[j].length;
+            }
+            nums += tmp_nums;
+        }
+    }
+    return nums;
+}
+// 任选二组选
+function renxuan2zx(me){
+    var maxplace = 1;
+    var nums = 0;
+    if (me.rxArr.length > 1) {
+        var place = 0;
+        for (var i = 0; i < me.rxArr.length; i++) {
+            if (me.rxArr[i]!='' || me.rxArr[i]!=null) {
+                place++;
+            }
+        }
+        var newsel = me.userArr[0];
+        var m = 2;
+        if (place >= m) {
+            var h = ArrayUtils.ComNum(place, m);
+            if (h > 0) {
+                for (var i = 0; i < maxplace; i++) {
+                    var s = newsel.length;
+                    if (s > 1) {
+                        nums += s * (s - 1) / 2;
+                    }
+                }
+                nums *= h;
+            }
+        }
+    }
+    return nums;
+};
+// 任选3组三组六
+function rxz3z6(me){
+    let nums = 0,maxplace = 1;
+    if(me.NavTwo_index==67){
+        if (me.rxArr.length > 1) {
+            let place = 0;
+            for (let i = 0; i < me.rxArr.length; i++) {
+                if (me.rxArr[i]!='' || me.rxArr[i]!=null) {
+                    place++;
+                }
+            }
+            let newsel = me.userArr[0];
+            let m = 3;
+            // 任选3必须大于选了3位以上才能组成组合
+            if (place >= m) {
+                let h = ArrayUtils.ComNum(place, m);
+                if (h > 0) {// 组合数必须大于0
+                    for (let i = 0; i < maxplace; i++) {
+                        let s = newsel.length;
+                        // 组三必须选两位或者以上
+                        if (s > 1) {
+                            nums += s * (s - 1);
+                        }
+                    }
+                    nums *= h;
+                }
+            }
+        }
+    }else if(me.NavTwo_index==68){
+        if (me.rxArr.length > 1) {
+            let place = 0;
+            for (let i = 0; i < me.rxArr.length; i++) {
+                if (me.rxArr[i]!='' || me.rxArr[i]!=null) {
+                    place++;
+                }
+            }
+            let newsel = me.userArr[0];
+            let m = 3;
+            // 任选3必须大于选了3位以上才能组成组合
+            if (place >= m) {
+                let h = ArrayUtils.ComNum(place, m);
+                if (h > 0) {// 组合数必须大于0
+                    for (let i = 0; i < maxplace; i++) {
+                        let s = newsel.length;
+                        // 组六必须选三位或者以上
+                        if (s > 2) {
+                            nums += s * (s - 1) * (s - 2) / 6;
+                        }
+                    }
+                    nums *= h;
+                }
+            }
+        }
+    }
+    return nums;
+};
+// 后三、中三、前三、后二、前二直选和值
+function zhixuanhezhi(me){
+    var nums = 0;
+    var cc = {0: 1,1: 3,2: 6,3: 10,4: 15,5: 21,6: 28,7: 36,8: 45,9: 55,10: 63,11: 69,12: 73,13: 75,14: 75,15: 73,16: 69,17: 63,18: 55,19: 45,20: 36,21: 28,22: 21,23: 15,24: 10,25: 6,26: 3,27: 1};
+    if (me.NavTwo_index == 45 || me.NavTwo_index == 51) {
+        cc = {0: 1,1: 2,2: 3,3: 4,4: 5,5: 6,6: 7,7: 8,8: 9,9: 10,10: 9,11: 8,12: 7,13: 6,14: 5,15: 4,16: 3,17: 2,18: 1};
+    }
+    for (var i = 0; i < me.userArr[0].length; i++) {
+        nums += cc[parseInt(me.userArr[0][i], 10)];
+    }
+    return nums;
+}
+// 组选12、组选4
+function zu12_4(me){
+    var nums = 0, tmp_nums = 1;
+    var minchosen = [];
+    if (me.NavTwo_index == 16 || me.NavTwo_index == 22) {
+        minchosen = [1, 2];
+    }
+    if (me.NavTwo_index == 18 || me.NavTwo_index == 24) {
+        minchosen = [1, 1];
+    }
+    if (me.userArr[0].length >= minchosen[0] && me.userArr[1].length >= minchosen[1]) {
+        var h = ArrayUtils.intersect(me.userArr[0], me.userArr[1]).length;
+        tmp_nums = ArrayUtils.ComNum(me.userArr[0].length, minchosen[0]) * ArrayUtils.ComNum(me.userArr[1].length, minchosen[1]);
+        if (h > 0) {
+            if (me.NavTwo_index == 16 || me.NavTwo_index == 22) {
+                tmp_nums -= ArrayUtils.ComNum(h, 1) * ArrayUtils.ComNum(me.userArr[1].length - 1, 1);
+            }
+            if (me.NavTwo_index == 18 || me.NavTwo_index == 24) {
+                tmp_nums -= ArrayUtils.ComNum(h, 1);
+            }
+        }
+        nums += tmp_nums;
+    }
+    return nums;
+}
 // 组选60、组选30、组选20
 function zu60_30_20(me){
     var nums = 0, tmp_nums = 1;
