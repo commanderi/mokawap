@@ -62,13 +62,10 @@
                     </div>
                 </div>
                 <div class="container___3PZA2" v-else>
-                    <div>正在获取开奖数据</div>
-                    <div class="flex___16JOt lotteryWinView___1zcag">
-                        <div style="margin-right: .2rem;" v-if="data.lastOneNumber!=null">等待{{ Number(data.thisOpenTottery.next_stage)-1 }}开奖</div>
-                    </div>
+                    <div>正在获取上期开奖数据</div>
                 </div>
                 <div>
-                    <div class="currentIssueId___1xhbZ" v-if="data.lastOneNumber!=null">距{{ data.thisOpenTottery.next_stage }}期截止</div>
+                    <div class="currentIssueId___1xhbZ" v-if="data.thisOpenTottery!=null">距{{ data.thisOpenTottery.next_stage }}期截止</div>
                     <div class="timer___1tSLt">{{hms.hour}}:{{hms.minute}}:{{hms.second}}</div>
                 </div>
             </div>
@@ -108,7 +105,7 @@
                     <div class="container___K0zBX">
                         <div class="dropIcon___3fbhG" @click="showQiCiTable"></div>
                         <div class="container1___3TtZg">
-                            <div class="balance___3VTdb">余额：5555元</div>
+                            <div class="balance___3VTdb">余额：{{ data.userInfo!=null ? data.userInfo.money : '0.00' }}元</div>
                             <div class="returnCat" v-show='!BettingData.length==0' @click="changePage('/BetBuyListPage', {id: id, title: title})">返回购物车<i class="lf_num">{{ BettingData.length }}</i></div>
                         </div>
                     </div>
@@ -633,13 +630,12 @@
                                 <div class="am-list-item am-input-item am-list-item-middle moneyBase___2PFgO am-input-focus am-input-android" style="width:34%">
                                     <div class="am-list-line">
                                         <div class="am-input-control">
-                                            <!-- <input maxlength="7" type="text" v-on:input="getSingleAmount" v-on:focus="fa" v-model="SingleAmount" pattern="[0-9]*" onkeyup="value=value.replace(/[^0-9]/g,'')" onpaste="value=value.replace(/[^0-9]/g,'')" oncontextmenu="value=value.replace(/[^0-9]/g,'')"> -->
                                             <input type="text" class="j_Amount" v-on:input="ononeMoney($event)" v-model="oneMoney" onkeyup="value=value.replace(/[^0-9]/g,'')" onpaste="value=value.replace(/[^0-9]/g,'')" oncontextmenu="value=value.replace(/[^0-9]/g,'')">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="selectMode___3rpny">
-                                    <!-- modeItemActive -->
+                                    <!-- 切换元角分厘 -->
                                     <div class="modeItem___1u_Tu" :class="YuanAngle==1 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(1)">元</div>
                                     <div class="modeItem___1u_Tu" :class="YuanAngle==0.1 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(0.1)">角</div>
                                     <div class="modeItem___1u_Tu" :class="YuanAngle==0.01 ? 'modeItemActive' : ''" v-on:click="setYuanAngle(0.01)">分</div>
@@ -647,7 +643,7 @@
                                 </div>
                             </div>
                             <div class="selectMoney">
-                                <!-- modeItemActive -->
+                                <!-- 选择单注金额 -->
                                 <button v-for="(d,i) in SingleAmountArr" :key="i" :class="SingleAmount==d ? 'modeItemActive' : ''" v-on:click="selSingleAmount(d)">{{ d }}</button>
                             </div>
                             <div class="textInfo">
@@ -682,18 +678,8 @@ export default {
             NavOneData:null,//默认一级菜单数据
             NavTwoData:null,//默认二级菜单数据
             NavTwoFont:'复式',
-            // 获取的数据
-            data:{
-                lastOpenNumber:null, //近十期开奖号码数据
-                thisOpenTottery:null, //当前期数数据
-                lastOneNumber:null, //上一期开奖号码数据
-            },
-            hms:{
-                hour:0,
-                minute:0,
-                second:0,
-                totalSecond:0, //总秒数
-            },
+            timeFn:null,
+            timeFnNum:5,
             SingleAmountArr:[10,50,100,200,500,1000,5000,10000,50000],
             SingleAmount:0,
             YuanAngle:1,
@@ -702,12 +688,17 @@ export default {
             time:null, //倒计时
             titleArr:['万位','千位','百位','十位','个位'],
             footerArr:['全','大','小','单','双','清'],
+            tipArr:['1.多注号码请用一个空格隔开','2.可复制号码粘贴到输入框'],
             userArr:[[],[],[],[],[]],
             userArrChinese:[[],[]],
             rxArr:[], //任选
             userArrLen:0,
             tableTop:0,
             textareaData:null, //单式
+            id: '',
+            title: '',
+            loginInfo:{},
+            oneMoney:2,//可操作单注金额
             DesignationArr:[
                 {'num':null},
                 {'num':null},
@@ -715,8 +706,6 @@ export default {
                 {'num':null},
                 {'num':null},
             ],
-            tipArr:['1.多注号码请用一个空格隔开','2.可复制号码粘贴到输入框'],
-            oneMoney:2,//可操作单注金额
             // 投注信息
             bettingInfo:{
                 number:'',
@@ -727,31 +716,71 @@ export default {
                 rate:null, //默认赔率
                 odd_play:null, //默认玩法
             },
-            loginInfo:{},
-            myObj:[],
-            myJson:[],
-            id: '',
-            title: '',
+            // 获取的数据
+            data:{
+                lastOpenNumber:null, //近十期开奖号码数据
+                thisOpenTottery:null, //当前期数数据
+                lastOneNumber:null, //上一期开奖号码数据
+                userInfo:null //用户数据
+            },
+            // 倒计时时分秒
+            hms:{
+                hour:0,
+                minute:0,
+                second:0,
+            },
         };
     },
     computed: {
         ...mapState(["BettingData"])
+    },
+    watch:{
+        id(){
+            clearInterval(this.timeFn);
+            clearInterval(this.time);
+            this.timeFn = null;
+            this.time = null;
+        }
     },
     components: {
         LotteryLayer
     },
     destroyed() {
         document.querySelector("body").setAttribute("style", "background:#292d30 !important;");
-        // clearInterval(this.time);
-        // clearInterval(this.time10);
+        clearInterval(this.timeFn);
+        clearInterval(this.time);
+        this.timeFn = null;
+        this.time = null;
     },
     mounted() {
         this.loginInfo = JSON.parse(localStorage.getItem('loginInfo'));
-        this.id = this.$route.query.id
-        this.title = this.$route.query.title
-        this.getPlayingData();
-        this.getLastOpenNumber(); //近十期
-        this.getNextTimeStage(); //下一期开奖时间
+        this.id = this.$route.query.id;
+        this.title = this.$route.query.title;
+        switch (Number(this.$route.query.id)) {
+            case 5:case 11:case 12:case 14: //二十分钟一期
+                this.timeFnNum = 20000;
+            break;
+            case 9:case 17: //十分钟一期
+                this.timeFnNum = 15000;
+            break;
+            case 8:case 16:case 15: //五分钟一期
+                this.timeFnNum = 10000;
+            break;
+            default: //小于分钟一期
+                this.timeFnNum = 5000;
+            break;
+        }
+        GetPersonalInfo({'token': this.loginInfo.token,'uid': this.loginInfo.id})
+            .then(res => {
+                if (res.ret == 200) {
+                    this.data.userInfo = res.data;
+                } else {
+                    this.$alert('获取余额出错');
+                }
+            })
+        this.getPlayingData(); //获取玩法数据
+        this.getLastOpenNumber(); //获取近十期开奖结果
+        this.getNextTimeStage(); //获取结束投注时间
     },
     methods: {
         // 一级菜单选择
@@ -784,7 +813,8 @@ export default {
             }
         },
         ononeMoney:function(e){
-            console.log(e.data)
+            this.bettingInfo.singleMoney = this.oneMoney*this.YuanAngle;
+            this.bettingInfo.allMoney = (this.bettingInfo.bettingNumber*this.oneMoney)*this.YuanAngle;
         },
         setBetting:function(){
             $('.Mask').removeClass('scale_1');
@@ -863,19 +893,23 @@ export default {
         },
         // 跳转购物车
         toShoppingCart:function(){
-            let list = {
-                number:this.bettingInfo.number,
-                odd_play:this.bettingInfo.odd_play,
-                odd_id:this.NavTwo_index,
-                note:this.bettingInfo.bettingNumber,
-                money:this.bettingInfo.allMoney,
-                one_money:this.bettingInfo.singleMoney,
-                rate:this.bettingInfo.rate,
-                multiple:this.bettingInfo.setMultipleNumber,
-                odd_title:this.NavOneData[this.NavOne_index].name+'-'+this.NavTwoFont,
-            };
-            this.$store.commit("increment",list);
-            this.$router.push({ path:'/BetBuyListPage', query:{id:this.id,title:this.title}});
+            if(this.oneMoney<0.001){
+                this.$alert('单笔最小投注金额必须大于0.001','提示')
+            }else{
+                let list = {
+                    number:this.bettingInfo.number,
+                    odd_play:this.bettingInfo.odd_play,
+                    odd_id:this.NavTwo_index,
+                    note:this.bettingInfo.bettingNumber,
+                    money:this.bettingInfo.allMoney,
+                    one_money:this.bettingInfo.singleMoney,
+                    rate:this.bettingInfo.rate,
+                    multiple:this.bettingInfo.setMultipleNumber,
+                    odd_title:this.NavOneData[this.NavOne_index].name+'-'+this.NavTwoFont,
+                };
+                this.$store.commit("increment",list);
+                this.$router.push({ path:'/BetBuyListPage', query:{id:this.id,title:this.title}});
+            }
         },
         // 清除选择的投注数据
         clearUserArr:function(){
@@ -913,11 +947,7 @@ export default {
                     this.NavTwoData = res.data[0].play_rule;
                     this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
                     this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
-                    // console.log('一级',this.NavOneData)
-                    // console.log('二级',this.NavTwoData)
-                    // loading.close();
                 } else {
-                    // loading.close();
                     this.$alert(res, '请求出错').then((result) => {
                         if(result){
                             this.returnFn();
@@ -935,56 +965,58 @@ export default {
                     this.data.lastOpenNumber = res.data;
                     loading.close();
                 } else {
-                    console.log(res.msg);
                     loading.close();
+                    this.$alert(res.msg);
                 }
             })
         },
-        // 获取当前最近一期
-        getLastOneNumber:function(next_stage) {
-            getLastOneNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id,stage: parseInt(next_stage)-1})
-            .then(res => {
-                if (res.ret == 200) {
-                    this.data.lastOneNumber = res.data[0];
-                } else {
-                    console.log(res.msg);
-                }
-                // this.getLastOpenNumber()
-            })
-        },
-        // 获取下一期开奖时间
+        // 获取结束投注时间
         getNextTimeStage:function() {
+            clearInterval(this.time);
             getNextTimeStage({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
                     this.data.thisOpenTottery = res.data;
                     this.thisTermTime();
-                    this.getLastOneNumber(this.data.thisOpenTottery.next_stage);
+                    this.getLastOneNumber();
                 } else {
-                    console.log(res.msg);
+                    this.$alert(res.msg);
                 }
             })
+        },
+        // 获取上一期开奖结果
+        getLastOneNumber:function() {
+            this.data.lastOneNumber = null;
+            this.timeFn = setInterval(() => {
+                if(this.data.lastOneNumber!=null){
+                    clearInterval(this.timeFn);
+                }else{
+                    getLastOneNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id,stage: parseInt(this.data.thisOpenTottery.next_stage)-1})
+                    .then(res => {
+                        if (res.ret == 200) {
+                            this.data.lastOneNumber = res.data[0];
+                        } else {
+                            this.data.lastOneNumber = null;
+                        }
+                    })
+                }
+            }, this.timeFnNum);
         },
         // 当前期数倒计时
         thisTermTime:function(){
             let c = this.data.thisOpenTottery.open_time;
             this.time = setInterval(() => {
-                this.hms.hour = (Math.floor((c/3600)%24));
-                this.hms.minute = (Math.floor((c/60)%60));
-                this.hms.second = (Math.floor(c%60));
-                if(this.hms.hour<10){
-                    this.hms.hour = '0'+this.hms.hour;
-                }
-                if(this.hms.minute<10){
-                    this.hms.minute = '0'+this.hms.minute;
-                }
-                if(this.hms.second<10){
-                    this.hms.second = '0'+this.hms.second;
-                }
-                // console.log(this.hms.hour,this.hms.minute,this.hms.second)
+                this.hms.hour = Math.floor(c/3600)%24;
+                this.hms.minute = Math.floor(c/60)%60;
+                this.hms.second = Math.floor(c%60);
+                if(this.hms.hour<10){this.hms.hour = '0'+this.hms.hour}
+                if(this.hms.minute<10){this.hms.minute = '0'+this.hms.minute}
+                if(this.hms.second<10){this.hms.second = '0'+this.hms.second}
                 c--;
+                // console.log(this.hms.hour,this.hms.minute,this.hms.second)
                 if(c<1){
                     clearInterval(this.time);
+                    clearInterval(this.timeFn);
                     this.getNextTimeStage();
                 }
             }, 1000);

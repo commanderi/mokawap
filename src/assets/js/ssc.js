@@ -393,19 +393,6 @@ function AssemblyData(me,num){
         break
     }
     me.bettingInfo.number = successData;
-    // list = {
-    //     number:successData,
-    //     odd_play:me.bettingInfo.odd_play,
-    //     odd_id:me.NavTwo_index,
-    //     note:me.bettingInfo.bettingNumber,
-    //     money:me.bettingInfo.allMoney,
-    //     one_money:me.bettingInfo.singleMoney,
-    //     rate:me.bettingInfo.rate,
-    //     multiple:me.bettingInfo.setMultipleNumber,
-    //     odd_title:me.NavOneData[me.NavOne_index].name+'-'+me.NavTwoFont,
-    // };
-    // me.myObj.push(list);
-    // m.clearUserArr();
 };
 export{
     AssemblyData
