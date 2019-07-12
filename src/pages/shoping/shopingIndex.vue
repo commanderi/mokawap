@@ -24,7 +24,7 @@
             <ul v-if="kindData!=null">
                 <template v-for="(d,i) in kindData">
                     <!-- pk10 -->
-                    <li class="listItem___1BA9t" :key="i" v-if="d.id==3||d.id==4" @click="changePage('PK10/BJPK10', {id:d.id,title:d.name})">
+                    <li class="listItem___1BA9t" :key="i" v-if="d.id==3||d.id==4" @click="changePage('PK10/PK10', {id:d.id,title:d.name})">
                         <img class="listItemImg" :src="d.cate_img">
                         <div class="listItemRight___3_yMH">
                             <div class="flex rightItem1___2D7FW">
@@ -78,7 +78,7 @@
             <div class="flex lotteryGrid___NVc6-" v-if="kindData!=null">
                 <template v-for="(d,i) in kindData">
                     <!-- pk10 -->
-                    <div class="gridItem___2sSIr" :key="i" v-if="d.id==3||d.id==4" @click="changePage('PK10/BJPK10', {id:d.id,title:d.name})">
+                    <div class="gridItem___2sSIr" :key="i" v-if="d.id==3||d.id==4" @click="changePage('PK10/PK10', {id:d.id,title:d.name})">
                         <img class="gridItemImg___3nqhZ" :src="d.cate_img">
                         <div class="gameNameInChinese___2oU7A">{{ d.name }}</div>
                         <div class="timer___1iI1P">{{ hour[i] }}:{{ minute[i] }}:{{ second[i] }}</div>

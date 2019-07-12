@@ -28,7 +28,7 @@
                         <div class="flex___16JOt betItem___oDlG_" v-for="(d,i) in BettingData" :key="i">
                             <div class="selectContainer___2dD7r">
                                 <div class="selectNoText___2Qney">{{ d.number }}</div>
-                                <div class="selectTotalText___14JWU">{{ d.odd_title }} {{ d.note }}注 {{ d.one_money }}元 × {{ multiple }}倍</div>
+                                <div class="selectTotalText___14JWU">{{ d.odd_title }} {{ d.note }}注 × {{ d.one_money }}元 × {{ multiple }}倍</div>
                             </div>
                             <div class="iconRemove___3CKmq" v-on:click="clearListMe(i)"></div>
                         </div>

@@ -62,6 +62,11 @@ export default new Router({
       name: 'SSC',
       component: page('shoping/SSC/SSC')
     },
+    {
+      path: '/PK10/PK10',
+      name: 'PK10',
+      component: page('shoping/PK10/PK10')
+    },
     // 各彩种路由结束
     // 购物车
     {
