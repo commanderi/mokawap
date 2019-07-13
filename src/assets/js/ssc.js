@@ -410,37 +410,7 @@ function spliceBetNumberArr(arr, num) {
     }
     return arr
 };
-// 任选二组选
-function renxuan2zx(me){
-    var maxplace = 1;
-    var nums = 0;
-    if (me.rxArr.length > 1) {
-        var place = 0;
-        for (var i = 0; i < me.rxArr.length; i++) {
-            if (me.rxArr[i]!='' || me.rxArr[i]!=null) {
-                place++;
-            }
-        }
-        var newsel = me.userArr[0];
-        var m = 2;
-        if (place >= m) {
-            var h = ArrayUtils.ComNum(place, m);
-            if (h > 0) {
-                for (var i = 0; i < maxplace; i++) {
-                    var s = newsel.length;
-                    if (s > 1) {
-                        nums += s * (s - 1) / 2;
-                    }
-                }
-                nums *= h;
-            }
-        }
-    }
-    return nums;
-};
-export{
-    renxuan2zx
-}
+
 // 任选2、3、4复式
 function renxuan2_3_4fs(me){
     var nums = 0, tmp_nums = 1,minplace = 0;
