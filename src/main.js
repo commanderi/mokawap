@@ -14,7 +14,7 @@ import Toast from 'muse-ui-toast';
 import Loading from 'muse-ui-loading';
 import 'muse-ui/dist/muse-ui.css'
 import 'muse-ui-message/dist/muse-ui-message.css';
-import 'muse-ui-loading/dist/muse-ui-loading.css'; // load css
+import 'muse-ui-loading/dist/muse-ui-loading.css';
 Vue.use(MuseUI)
 Vue.use(Loading)
 Vue.use(Message)
@@ -62,6 +62,10 @@ new Vue({
   el: '#app',
   router,
   store,
+  MuseUI,
+  Message,
+  Loading,
+  Toast,
   components: { App },
   template: '<App/>'
 })

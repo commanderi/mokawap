@@ -41,7 +41,7 @@
                     <div class="am-popover-content">
                         <ul class="am-popover-item-ui">
                             <li @click="changePage('/gameRecord', {})">投注记录</li>
-                            <li @click="changePage('/openLotteryDetails', {id: id, title: title, type: 'ssc'})">开奖历史</li>
+                            <li @click="changePage('/openLotteryDetails', {id: id, title: title, type: 'SSC'})">开奖历史</li>
                             <li @click="changePage('/playRule', {id: id})">玩法说明</li>
                         </ul>
                     </div>
@@ -95,7 +95,7 @@
                         </table>
                     </div>
                     <div class="optionContainer___3nqVi">
-                        <div class="moreBtn___3O84Q" @click="changePage('/openLotteryDetails', {id: id, title: title, type: 'ssc'})">
+                        <div class="moreBtn___3O84Q" @click="changePage('/openLotteryDetails', {id: id, title: title, type: 'SSC'})">
                             <div class="moreIcon___3fQEy"></div>
                             <span>点击查看更多开奖历史</span>
                         </div>

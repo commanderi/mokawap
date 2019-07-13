@@ -24,7 +24,8 @@ function getTextareaData(m){
             for (let j = 0; j < arr[i].length/2; j++) {
                 me.userArr[i][j] = arr[i].slice(j*2,(j*2)+2);
                 if(!Number(me.userArr[i][j])){
-                    console.log('请输入阿拉伯数字或正整数');
+                    // m.$alert('请输入阿拉伯数字或正整数');
+                    // m.$toast.error('请输入阿拉伯数字或正整数');
                     return
                 }
             }
@@ -34,7 +35,6 @@ function getTextareaData(m){
         return
     }
     me.userArr = spliceBetNumberArr(me.userArr,me.userArr.length);
-    console.log(me.userArr);
     switch (me.NavTwo_index) {
         case 95:
             if(me.userArr.length!=2){
@@ -64,7 +64,6 @@ function getTextareaData(m){
     me.bettingInfo.bettingNumber = qian2_3_4_5(me.NavTwo_index,me.userArr);
     me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
     AssemblyData(me);
-    
 };
 export{
     getTextareaData
