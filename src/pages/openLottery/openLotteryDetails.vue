@@ -11,7 +11,7 @@
                                     <div class="lastPlanNo___2-qZP">第{{item.stage}}期</div>
                                     <div class="lastOpenTime___sKspB">{{item.dateline}}</div>
                                 </div>
-                                <!-- 1-10 十位数带背景色-->
+                                <!-- PK10 -->
                                 <div class="flex___16JOt openCode___2FB7l" v-if="type=='PK10'">
                                     <template v-for="(d, i) in item.number">
                                         <img :key="i" v-if="d==1" src="../../assets/pkf1.png" class="pk10State___2NHa8"/>
@@ -26,13 +26,12 @@
                                         <img :key="i" v-else src="../../assets/pkf10.png" class="pk10State___2NHa8"/>
                                     </template>
                                 </div>
-                                <!-- 0 - 9 五位数 / 或 三位数-->
+                                <!-- SSC -->
                                 <div class="flex___16JOt openCode___2FB7l" v-else-if="type=='SSC'">
-                                    <div class="num___1g-CB" v-for="(d, i) in item.number.split(',')" :key="i">{{ d }}</div>
+                                    <div class="num___1g-CB" v-for="(d, i) in item.number" :key="i">{{ d }}</div>
                                     <div class="flex___16JOt sumInfo___1BYxW" v-if="item.detail">{{item.detail[0]}}|{{item.detail[1]}}</div>
-                                    <!--<div class="flex___16JOt sumInfo___1BYxW">和值：85</div>-->
                                 </div>
-                                <!-- 色子 -->
+                                <!-- K3 -->
                                 <div class="flex___16JOt openCode___2FB7l" v-else-if="type=='K3'">
                                     <div class="flex___16JOt k3Bg___dhMrB">
                                         <div :class="['saizi___1zlet', 'sazi'+d] " v-for="(d, i) in item.number" :key="i"></div>
@@ -40,7 +39,7 @@
                                     <div class="flex___16JOt sumInfo___1BYxW" v-if="item.detail">和值：{{item.detail[0]}}</div>
                                     <div class="flex___16JOt numInfo___8Fkkk" v-if="item.detail">{{item.detail[1]}}</div>
                                 </div>
-                                <!-- 极速六合彩 十二生肖-->
+                                <!-- 六合彩 -->
                                 <div class="flex___16JOt openCode___2FB7l" v-else-if="type=='LHC'">
                                     <template v-for="(n, i) in item.number">
                                         <div class="flex___16JOt sixItem___3SrwG" :key="i">
@@ -117,12 +116,7 @@ export default {
                 let list = res.data.data;
                 let dataList = this.dataList;
                 for (let i = 0; i < list.length; i++) {
-                    if (
-                        this.type == "ssc" ||
-                        this.type == "k3" ||
-                        this.type == "PK10" ||
-                        this.type == "LHC"
-                    ) {
+                    if (this.type == "SSC" || this.type == "K3" || this.type == "PK10" || this.type == "LHC") {
                         list[i].number = list[i].number.split(",");
                     }
                     dataList.push(list[i]);

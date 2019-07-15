@@ -142,4 +142,7 @@ export const GetMyJunior = params => { return axios.post('/agent/get_my_junior',
 export const GetAgentMoney = params => { return axios.post('/agent/get_agent_money', params).then(res => res).catch(err => err) }
 // 获取团队报表
 export const GetTeamReport = params => { return axios.post('/agent/get_team_report', params).then(res => res).catch(err => err) }
-
+// 代理转帐
+export const Transfertolower = params => { return axios.post('/money/transfer_to_lower', params).then(res => res).catch(err => err) }
+// 获取工资返点列表
+export const Getwagerebates = params => { return axios.post('/agent/get_wage_rebates', params).then(res => res).catch(err => err) }

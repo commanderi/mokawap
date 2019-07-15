@@ -268,11 +268,8 @@ export default {
         // 第三方游戏投注
         getThirdUrl() {
             if (this.loginInfo) {
-                GetThirdUrl({
-                    token: this.loginInfo.token,
-                    uid: this.loginInfo.id
-                }).then(res => {
-                    // console.log(res);
+                GetThirdUrl({token: this.loginInfo.token,uid: this.loginInfo.id})
+                .then(res => {
                     this.gameInfo = res.data;
                 });
             }
@@ -285,9 +282,10 @@ export default {
             }
         },
         gameLink(url, n) {
+            this.$toast.success("更新中，敬请期待...");
+            return
             if (n == 0) {
-                let url_new = "jumpbrowser://callName_?" + url;
-                window.location.href = url_new;
+                window.location.href = "jumpbrowser://callName_?" + url;
             } else {
                 this.changePage("/iframe", { url: url });
             }

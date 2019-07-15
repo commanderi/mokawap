@@ -10,12 +10,8 @@
         <div class="content">
             <ul class="list-view-section-body">
                 <template v-for="(item, index) in dataList">
-                    <li
-                        class="listItem___9-JCA"
-                        @click="changePage('PK10/BJPK10', {id:item.id, title: item.name})"
-                        :key="index"
-                        v-if="item.id==3||item.id==4"
-                    >
+                    <!-- PK10 -->
+                    <li class="listItem___9-JCA" @click="changePage('openLotteryDetails', {id:item.id, title: item.name,type:'PK10'})" :key="index" v-if="item.id==3||item.id==4">
                         <img class="listItemImg___LLQ1h" :src="item.cate_img" :alt="item.name" />
                         <div class="listItem___3Iww8">
                             <div class="flex___16JOt listItemChild___3-Nq6">
@@ -23,22 +19,13 @@
                                 <div class="lastPlanNo___2-qZP">第{{item.stage}}期</div>
                                 <div class="lastOpenTime___sKspB">{{item.dateline}}</div>
                             </div>
-                            <!-- 北京PK拾 -->
                             <div class="flex___16JOt openCode___2FB7l">
-                                <div
-                                    :class="['pk10State___2NHa8', 'pk10State'+num]"
-                                    v-for="(num, i) in item.number"
-                                    :key="i"
-                                ></div>
+                                <div v-for="(num, i) in item.number.split(',')" :key="i" :class="['pk10State___2NHa8', 'pk10State'+num]"></div>
                             </div>
                         </div>
                     </li>
-                    <li
-                        class="listItem___9-JCA"
-                        @click="changePage('SSC/CQSSC', {id: item.id, title: item.name})"
-                        :key="index"
-                        v-else
-                    >
+                    <!-- 时时彩 -->
+                    <li class="listItem___9-JCA" @click="changePage('openLotteryDetails', {id: item.id, title: item.name,type:'SSC'})" :key="index" v-else>
                         <img class="listItemImg___LLQ1h" :src="item.cate_img" :alt="item.name" />
                         <div class="listItem___3Iww8">
                             <div class="flex___16JOt listItemChild___3-Nq6">
@@ -46,14 +33,8 @@
                                 <div class="lastPlanNo___2-qZP">第{{item.stage}}期</div>
                                 <div class="lastOpenTime___sKspB">{{item.dateline}}</div>
                             </div>
-                            <!-- 新疆时时彩 -->
                             <div class="flex___16JOt openCode___2FB7l">
-                                <div
-                                    class="num___1g-CB"
-                                    v-for="(num, i) in item.number"
-                                    :key="i"
-                                >{{num}}</div>
-                                <!--<div class="flex___16JOt numInfo___8Fkkk">大单|牛七</div>-->
+                                <div class="num___1g-CB" v-for="(num, i) in item.number.split(',')" :key="i">{{num}}</div>
                             </div>
                         </div>
                     </li>
@@ -71,7 +52,8 @@ export default {
     name: "open-lottery-index",
     data() {
         return {
-            dataList: []
+            dataList: null,
+            thisTime: null,
         };
     },
     computed: {
@@ -82,16 +64,19 @@ export default {
     },
     mounted() {
         this.getData();
+        let str1 = new Date().getFullYear();
+        let str2 = new Date().getMonth()+1;
+        let str3 = new Date().getDate();
+        if(str2<'10'){str2 = '0'+str2}
+        if(str3<'10'){str3 = '0'+str3}
+        this.thisTime = str1+'-'+str2+'-'+str3;
     },
     methods: {
         getData() {
             GetNewOpenNumber().then(res => {
-                let list = res.data;
-                for (let i = 0; i < list.length; i++) {
-                    list[i].number = list[i].number.split(",");
-                    if (list[i].stage.length >= 8) {
-                        list[i].stage = list[i].stage.substr(9);
-                    }
+                let reg = new RegExp(this.thisTime,"g");
+                for (let i = 0; i < res.data.length; i++) {
+                    res.data[i].dateline = res.data[i].dateline.replace(reg,'');
                 }
                 this.dataList = res.data;
             });

@@ -235,6 +235,12 @@ export default new Router({
       component: page('personal/myMessage')
     },
     {
+      path: '/InvitationList',
+      name: 'InvitationList',
+      component: page('personal/InvitationList')
+    },
+    
+    {
       path: '/agentUser',
       name: 'agentUser',
       component: page('personal/agentUser'),

@@ -37,6 +37,7 @@
                         </div>
                         <div class="flex___16JOt listItemOption___1LGdc" v-if="item.active">
                             <div class="optionItem___1MhVG" @click.stop="xiaJiUserFn(item)"><div class="iconItem___2aUkH icon1___dhQ8v"></div>下级</div>
+                            <div class="optionItem___1MhVG" @click.stop="transfertoLower(item)"><div class="iconItem___2aUkH icon_zz"></div>转账</div>
                             <div class="optionItem___1MhVG" @click.stop="changePage('/accountHistoryList', {title:item.mobile+'报表',junior_id: item.id})">
                                 <div class="iconItem___2aUkH icon5___3mv10"></div>报表
                             </div>
@@ -54,7 +55,7 @@
 <script>
 import BackHeader from "@/components/backHeader.vue";
 import { mapState } from "vuex";
-import { GetMyJunior, GetPersonalInfo } from "../../axios/api.js";
+import { GetMyJunior, GetPersonalInfo, Transfertolower } from "../../axios/api.js";
 
 export default {
     name: "agent-user",
@@ -71,15 +72,10 @@ export default {
         BackHeader
     },
     destroyed() {
-        document
-            .querySelector("body")
-            .setAttribute("style", "background:#292d30 !important;");
+        document.querySelector("body").setAttribute("style", "background:#292d30 !important;");
     },
     mounted() {
-        document
-            .querySelector("body")
-            .setAttribute("style", "background:#f5f5f5 !important;");
-        //
+        document.querySelector("body").setAttribute("style", "background:#f5f5f5 !important;");
         this.getData();
         this.getPersonalInfo();
     },
@@ -94,6 +90,33 @@ export default {
                     data[i].active = false;
                 }
                 this.dataList = data;
+            });
+        },
+        // 转账给下级
+        transfertoLower:function(data){
+            this.$prompt('转给：'+data.mobile, '请输入转账金额', {
+                validator (value) {
+                    return {
+                        valid: /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/.test(value),
+                        message: '转账金额必须大于0'
+                    }
+                }
+            }).then(({ result, value }) => {
+                if (result) {
+                    Transfertolower({
+                        token: this.loginInfo.token,
+                        uid: this.loginInfo.id,
+                        lower_uid:data.id,
+                        money:value
+                    }).then(res => {
+                        if (res.ret == 200) {
+                            this.$toast.success(res.msg);
+                            this.getData();
+                        } else {
+                            this.$toast.error(res.msg);
+                        }
+                    })
+                }
             });
         },
         // 获取下级(点击下级)

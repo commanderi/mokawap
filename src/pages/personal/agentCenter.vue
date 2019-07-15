@@ -50,6 +50,13 @@
                         </div>
                         <div class="am-list-ripple" style="display: none;"></div>
                     </div>
+                    <div class="am-list-item am-list-item-middle" @click="changePage('/InvitationList', {})">
+                        <div class="am-list-line">
+                            <div class="am-list-content">我的邀请码</div>
+                            <div class="am-list-arrow am-list-arrow-horizontal" aria-hidden="true"></div>
+                        </div>
+                        <div class="am-list-ripple" style="display: none;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -74,15 +81,10 @@ export default {
         BackHeader
     },
     destroyed() {
-        document
-            .querySelector("body")
-            .setAttribute("style", "background:#292d30 !important;");
+        document.querySelector("body").setAttribute("style", "background:#292d30 !important;");
     },
     mounted() {
-        document
-            .querySelector("body")
-            .setAttribute("style", "background:#f5f5f5 !important;");
-
+        document.querySelector("body").setAttribute("style", "background:#f5f5f5 !important;");
         this.getPersonalInfo();
     },
     methods: {

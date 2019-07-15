@@ -995,6 +995,7 @@ export default {
                     .then(res => {
                         if (res.ret == 200) {
                             this.data.lastOneNumber = res.data[0];
+                            this.getLastOpenNumber();
                         } else {
                             this.data.lastOneNumber = null;
                         }

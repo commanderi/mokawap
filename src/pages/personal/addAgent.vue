@@ -55,7 +55,18 @@
                                         </mu-select>
                                     </div>
                                 </div>
-                                <div class="am-list-ripple" style="display: none;"></div>
+                                <!-- <div class="am-list-ripple" style="display: none;"></div> -->
+                            </div>
+                            <div class="am-list-item selectItem___3zjIv am-list-item-middle">
+                                <div class="am-list-line">
+                                    <div class="am-input-label am-input-label-5" style="line-height: .88rem;">工资返点：</div>
+                                    <div class="am-input-control" v-if="wage!=null">
+                                        <mu-select v-model="wage[0].percent" full-width @change="getwageVal">
+                                            <mu-option v-for="(city,index) in wage" :key="index" :label="city.percent" :value="city.value"></mu-option>
+                                        </mu-select>
+                                    </div>
+                                </div>
+                                <!-- <div class="am-list-ripple" style="display: none;"></div> -->
                             </div>
                         </div>
                     </div>
@@ -85,6 +96,16 @@
                                     <div class="am-input-control">
                                         <mu-select v-model="base" full-width @change="backRebatesSelect">
                                             <mu-option v-for="(city,index) in backRebatesList" :key="index" :label="city.base+'-'+city.percent+'(赔率)'" :value="city.base"></mu-option>
+                                        </mu-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-list-item selectItem___3zjIv am-list-item-middle">
+                                <div class="am-list-line">
+                                    <div class="am-input-label am-input-label-5" style="line-height: .88rem;">工资返点：</div>
+                                    <div class="am-input-control" v-if="wage!=null">
+                                        <mu-select v-model="wage[0].percent" full-width @change="getwageVal">
+                                            <mu-option v-for="(city,index) in wage" :key="index" :label="city.percent" :value="city.value"></mu-option>
                                         </mu-select>
                                     </div>
                                 </div>
@@ -157,11 +178,21 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>返点：</td>
+                                <td>彩票返点：</td>
                                 <td>
                                     <div class="selectContainer___PBQ01">
                                         <mu-select v-model="editForm.base" full-width @change="backRebatesSelect">
                                             <mu-option v-for="(city,index) in backRebatesList" :key="index" :label="city.base+'-'+city.percent+'(赔率)'" :value="city.base"></mu-option>
+                                        </mu-select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>工资返点：</td>
+                                <td>
+                                    <div class="selectContainer___PBQ01" v-if="wage!=null">
+                                        <mu-select v-model="wage[0].percent" full-width @change="getwageVal">
+                                            <mu-option v-for="(city,index) in wage" :key="index" :label="city.percent" :value="city.value"></mu-option>
                                         </mu-select>
                                     </div>
                                 </td>
@@ -185,7 +216,8 @@ import {
     MewMember,
     AddProduceCode,
     GetPromotionLinks,
-    EditProduceCode
+    EditProduceCode,
+    Getwagerebates
 } from "../../axios/api.js";
 export default {
     name: "add-agent",
@@ -197,6 +229,8 @@ export default {
             base: "", // 返点
             code: "", // 邀请码
             isEdit: false,
+            wage:null, // 工资返点
+            wagePercent:null, // 选择的工资返点
             xiaJiKaiHuType: [
                 {
                     name: "精准开户"
@@ -226,23 +260,17 @@ export default {
         ...mapState(["loginInfo"])
     },
     mounted() {
-        document
-            .querySelector("body")
-            .setAttribute("style", "background:#f5f5f5 !important;");
+        document.querySelector("body").setAttribute("style", "background:#f5f5f5 !important;");
         $(".segmentItem___13fnL").click(function() {
-            $(this)
-                .addClass("active___3sLqm")
-                .siblings()
-                .removeClass("active___3sLqm");
+            $(this).addClass("active___3sLqm").siblings().removeClass("active___3sLqm");
         });
         $(".typeItem___RTnEd").click(function() {
-            $(this)
-                .addClass("active")
-                .siblings()
-                .removeClass("active");
+            $(this).addClass("active").siblings().removeClass("active");
         });
         // 赔率返点列表
         this.getBackRebates();
+        // 获取工资返点列表
+        this.getWageRebates();
     },
     methods: {
         returnFn() {
@@ -282,7 +310,7 @@ export default {
                 this.promotionList = res.data;
             });
         },
-        // 获取 赔率返点列表
+        // 获取赔率返点列表
         getBackRebates() {
             GetBackRebates({
                 token: this.loginInfo.token,
@@ -292,9 +320,22 @@ export default {
                 this.base = res.data[0].base;
             });
         },
+        // 获取工资返点列表
+        getWageRebates:function(){
+            Getwagerebates({
+                token: this.loginInfo.token,
+                uid: this.loginInfo.id
+            }).then(res => {
+                this.wage = res.data;
+                this.wagePercent = res.data[0].value;
+            });
+        },
         // 选择返点
         backRebatesSelect(e) {
             this.base = e;
+        },
+        getwageVal(e){
+            this.wagePercent = e;
         },
         // 点击选码
         getProduceCode() {
@@ -325,7 +366,8 @@ export default {
                 uid: this.loginInfo.id,
                 mobile: this.mobile,
                 password: "123456",
-                base: this.base
+                base: this.base,
+                wage_percent:this.wagePercent
             };
             MewMember(param).then(res => {
                 this.msg(res);
@@ -342,7 +384,8 @@ export default {
                 uid: this.loginInfo.id,
                 code: this.code,
                 status: 1, // 0关闭1开启
-                base: this.base
+                base: this.base,
+                wage_percent:this.wagePercent
             };
             AddProduceCode(param).then(res => {
                 this.msg(res);
