@@ -612,15 +612,17 @@ export default {
         },
         // 获取玩法数据
         getPlayingData:function() {
-            // const loading = this.$loading();
+            const loading = this.$loading();
             getLotteryOdds({'token': this.loginInfo.token,'uid': this.loginInfo.id,'cate': this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
+                    loading.close();
                     this.NavOneData = res.data;
                     this.NavTwoData = res.data[0].play_rule;
                     this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
                     this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
                 } else {
+                    loading.close();
                     this.$alert(res, '请求出错').then((result) => {
                         if(result){
                             this.returnFn();
@@ -631,14 +633,11 @@ export default {
         },
         // 获取最近10期结果
         getLastOpenNumber:function() {
-            const loading = this.$loading();
             getLastOpenNumber({token: this.loginInfo.token,uid: this.loginInfo.id,cate: this.$route.query.id})
             .then(res => {
                 if (res.ret == 200) {
                     this.data.lastOpenNumber = res.data;
-                    loading.close();
                 } else {
-                    loading.close();
                     this.$alert(res.msg);
                 }
             })

@@ -6,23 +6,18 @@
                 <span>邀请码</span>
                 <span>工资返点</span>
                 <span>赔率</span>
-                <span>邀请码状态</span>
-                <span>注册用户数</span>
+                <span>状态</span>
+                <span>已注册</span>
                 <span>操作</span>
             </div>
-            <ul v-if="InvitationData!=null">
+            <ul class="InvitationList_content_ul" v-if="InvitationData!=null">
                 <li v-for="(d,i) in InvitationData" :key="i">
-                    <!-- // "wage_percent":   //工资返点
-                    // "percent": "0.980", //邀请码赔率
-                    // "status": 1, //状态
-                    // "register_number": 0, //注册用户数
-                    // "link": //邀请链接 -->
                     <span>{{ d.code }}</span>
-                    <span>{{ d.wage_percent }}</span>
-                    <span>{{ d.percent }}</span>
-                    <span>{{ d.status }}</span>
+                    <span>{{ d.wage_percent*100+'%' }}</span>
+                    <span>{{ d.base }}</span>
+                    <span>{{ d.status==1 ? '已开启' : '已禁用' }}</span>
                     <span>{{ d.register_number }}</span>
-                    <button>{{ d.link }}</button>
+                    <button :class="['lf_copy_btn_name'+i]" data-clipboard-action="copy" :data-clipboard-text="d.link" v-on:click="copyFn(d.link,i)">复制</button>
                 </li>
             </ul>
         </div>
@@ -64,7 +59,17 @@ export default {
                     this.InvitationData = res.data;
                 }
             });
-        }
+        },
+        copyFn(link,index){
+            const _this = this;
+            let clipboard = new this.clipboard(".lf_copy_btn_name"+index);
+            clipboard.on("success", function() {
+                _this.$toast.success("复制成功");
+            });
+            clipboard.on("error", function() {
+                _this.$toast.success("复制失败");
+            });
+        },
     }
 }
 </script>
@@ -75,9 +80,63 @@ export default {
 .InvitationList_content_title{
     width: 100%;
     height: auto;
+    padding: 0.22rem 2%;
+    display: flex;
+    justify-content:space-between;
+}
+.InvitationList_content_ul{
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow-y: auto;
+    padding: 0 2%;
+    background-color: #fff;
+}
+.InvitationList_content_ul>li{
+    padding: 0.32rem 0;
+    border-bottom: 1px solid #efeeee;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+}
+.InvitationList_content_ul>li:last-child{
+    border-bottom: 0px solid #efeeee;
 }
 .InvitationList_content_title>span{
-    
+    min-width: 16.66%;
+}
+.InvitationList_content_title>span:nth-of-type(4){
+    min-width: 16%;
+}
+.InvitationList_content_title>span:nth-of-type(5){
+    min-width: 16%;
+}
+.InvitationList_content_title>span:nth-of-type(6){
+    min-width: 17.98%;
+}
+.InvitationList_content_ul>li>span:nth-of-type(1){
+    min-width: 16.66%;
+}
+.InvitationList_content_ul>li>span:nth-of-type(2){
+    min-width: 16.66%;
+}
+.InvitationList_content_ul>li>span:nth-of-type(3){
+    min-width: 16.66%;
+}
+.InvitationList_content_ul>li>span:nth-of-type(4){
+    min-width: 16%;
+}
+.InvitationList_content_ul>li>span:nth-of-type(5){
+    min-width: 16%;
+}
+.InvitationList_content_ul>li>button{
+    min-width: 17.98%;
+    padding: 0.13rem 0;
+    border-radius: 4px;
+    background-color: #fdd835;
+    border: 0px solid #ccc;
+    color: #fff;
+    font-size: 0.3rem;
 }
 </style>
 
