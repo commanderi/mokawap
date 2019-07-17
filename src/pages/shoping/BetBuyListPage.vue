@@ -100,7 +100,9 @@ export default {
             this.BettingData[i].money = (this.BettingData[i].one_money*this.BettingData[i].note)*this.multiple;
             this.allmoney += ((this.BettingData[i].one_money*this.BettingData[i].note)*this.multiple);
         }
-        console.log(this.BettingData)
+        this.$store.state.oneIndex = this.BettingData[this.BettingData.length-1].odd_play-1;
+        this.$store.state.twoIndex = this.BettingData[this.BettingData.length-1].odd_id;
+        console.log(this.BettingData[this.BettingData.length-1].odd_play-1,this.BettingData[this.BettingData.length-1].odd_id);
     },
     watch:{
         BettingData(){
@@ -108,12 +110,6 @@ export default {
                 this.allmoney = null;
             }
         },
-        // multiple(val){
-        //     if(val==null||val==''){
-        //         this.multiple = 1;
-        //     }
-        //     this.allmoney = val*this.temmoney;
-        // }
     },
     computed:{
         ...mapState(["BettingData"])

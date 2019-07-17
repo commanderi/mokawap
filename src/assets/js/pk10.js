@@ -1,67 +1,63 @@
 // 处理单式文本域输入值
 function getTextareaData(m){
     const me = m.$data;
-    switch (me.NavTwo_index) {
-        case 95:
-            me.userArr = [[],[]];            
-        break;
-        case 98:
-            me.userArr = [[],[],[],[]];            
-        break;
-        case 101:
-            me.userArr = [[],[],[],[]];            
-        break;
-        case 103:
-            me.userArr = [[],[],[],[],[]];            
-        break;
-        default:
-            me.userArr = [];
-        break;
-    }
     let arr = me.textareaData.split(' ');
-    try {
-        for (let i = 0; i < arr.length; i++) {
-            for (let j = 0; j < arr[i].length/2; j++) {
-                me.userArr[i][j] = arr[i].slice(j*2,(j*2)+2);
-                if(!Number(me.userArr[i][j])){
-                    // m.$alert('请输入阿拉伯数字或正整数');
-                    // m.$toast.error('请输入阿拉伯数字或正整数');
-                    return
-                }
+    me.userArr = [];
+    let meArr = [];
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr[i].length; j++) {
+            if(arr[i].slice(j*2,(j*2)+2)){
+                meArr.push(arr[i].slice(j*2,(j*2)+2));
             }
         }
-    } catch (error) {
-        console.log('选择的号码不合法+');
-        return
     }
     me.userArr = spliceBetNumberArr(me.userArr,me.userArr.length);
-    switch (me.NavTwo_index) {
-        case 95:
-            if(me.userArr.length!=2){
-                console.log('选择的号码不合法');
-                return
+    for (let i = 0; i < meArr.length/2; i++) {
+        if(me.NavTwo_index==95){
+            me.userArr.push(meArr[i*2]+' '+meArr[(i*2)+1]);
+        }else if(me.NavTwo_index==98){
+            if(meArr[i*3]){
+                me.userArr.push(meArr[i*3]+' '+meArr[(i*3)+1]+' '+meArr[(i*3)+2]);
             }
-        break;
-        case 98:
-            if(me.userArr.length!=3){
-                console.log('选择的号码不合法');
-                return
+        }else if(me.NavTwo_index==101){
+            if(meArr[i*4]){
+                me.userArr.push(meArr[i*4]+' '+meArr[(i*4)+1]+' '+meArr[(i*4)+2]+' '+meArr[(i*4)+3]);
             }
-        break;
-        case 101:
-            if(me.userArr.length!=4){
-                console.log('选择的号码不合法');
-                return
+        }else if(me.NavTwo_index==103){
+            if(meArr[i*5]){
+                me.userArr.push(meArr[i*5]+' '+meArr[(i*5)+1]+' '+meArr[(i*5)+2]+' '+meArr[(i*5)+3]+' '+meArr[(i*5)+4]);
             }
-        break;
-        case 103:
-            if(me.userArr.length!=5){
-                console.log('选择的号码不合法');
-                return
-            }
-        break;
+        }
     }
-    me.bettingInfo.bettingNumber = qian2_3_4_5(me.NavTwo_index,me.userArr);
+    for (let i = 0; i < me.userArr.length; i++) {
+        switch (me.NavTwo_index) {
+            case 95:
+                if(me.userArr[i].length!=5){
+                    console.log('选择的号码不合法');
+                    return
+                }
+            break;
+            case 98:
+                if(me.userArr[i].length!=8){
+                    console.log('选择的号码不合法');
+                    return
+                }
+            break;
+            case 101:
+                if(me.userArr[i].length!=11){
+                    console.log('选择的号码不合法');
+                    return
+                }
+            break;
+            case 103:
+                if(me.userArr[i].length!=14){
+                    console.log('选择的号码不合法');
+                    return
+                }
+            break;
+        }
+    }
+    me.bettingInfo.bettingNumber = me.userArr.length;
     me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
     AssemblyData(me);
 };

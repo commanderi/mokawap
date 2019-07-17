@@ -9,11 +9,15 @@ const store = new Vuex.Store({
     host: 'http://api.vs04o.cn/',
     BettingData: [],
     getCates:null,
+    oneIndex:null,
+    twoIndex:null,
   },
   // mutations主要是修改store存储的值(同步)
   mutations:{
     increment(state,data){
       state.BettingData.push(data);
+      state.oneIndex = data;
+      state.twoIndex = data;
     },
   },
   getters:{

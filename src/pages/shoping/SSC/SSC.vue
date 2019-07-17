@@ -944,10 +944,21 @@ export default {
             .then(res => {
                 if (res.ret == 200) {
                     loading.close();
+                    // this.NavOneData = res.data;
+                    // this.NavTwoData = res.data[0].play_rule;
+                    // this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
+                    // this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
                     this.NavOneData = res.data;
-                    this.NavTwoData = res.data[0].play_rule;
+                    this.$store.state.oneIndex==null ? this.NavTwoData=res.data[0].play_rule : this.NavTwoData=res.data[this.$store.state.oneIndex].play_rule;
                     this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
                     this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
+                    for (let i = 0; i < res.data[this.$store.state.oneIndex].play_rule[0].odds.length; i++) {
+                        if(res.data[this.$store.state.oneIndex].play_rule[0].odds[i].id==this.$store.state.twoIndex){
+                            this.NavTwoFont = res.data[this.$store.state.oneIndex].play_rule[0].odds[i].rule;
+                        }
+                    }
+                    this.$store.state.oneIndex==null ? this.NavOne_index=0 : this.NavOne_index=this.$store.state.oneIndex;
+                    this.$store.state.twoIndex==null ? this.NavTwo_index=1 : this.NavTwo_index=this.$store.state.twoIndex;
                 } else {
                     loading.close();
                     this.$alert(res, '请求出错').then((result) => {

@@ -188,7 +188,7 @@
                         <template v-else-if="NavTwo_index==95">
                             <div class="betContainer_font">
                                 <p v-for="(d,i) in tipArr" :key="i">{{ d }}</p>
-                                <p class="tip_user">单注示列：01 05&nbsp;&nbsp;&nbsp;多注示列：0102 0506</p>
+                                <p class="tip_user">单注示列：0105&nbsp;&nbsp;&nbsp;多注示列：0102 0506</p>
                                 <textarea class="metextarea" cols="100" rows="8" type='number' v-model="textareaData" v-on:input="textareaDataFn"></textarea>
                             </div>
                         </template>
@@ -220,7 +220,7 @@
                         <template v-else-if="NavTwo_index==98">
                             <div class="betContainer_font">
                                 <p v-for="(d,i) in tipArr" :key="i">{{ d }}</p>
-                                <p class="tip_user">单注示列：01 05 10&nbsp;&nbsp;&nbsp;多注示列：0102 0405 0708</p>
+                                <p class="tip_user">单注示列：010510&nbsp;&nbsp;&nbsp;多注示列：010204 050708</p>
                                 <textarea class="metextarea" cols="100" rows="8" type='number' v-model="textareaData" v-on:input="textareaDataFn"></textarea>
                             </div>
                         </template>
@@ -252,7 +252,7 @@
                         <template v-else>
                             <div class="betContainer_font">
                                 <p v-for="(d,i) in tipArr" :key="i">{{ d }}</p>
-                                <p class="tip_user">单注示列：01 03 07 10&nbsp;&nbsp;&nbsp;多注示列：0102 0405 0708 0910</p>
+                                <p class="tip_user">单注示列：01030710&nbsp;&nbsp;&nbsp;多注示列：01020405 07080910</p>
                                 <textarea class="metextarea" cols="100" rows="8" type='number' v-model="textareaData" v-on:input="textareaDataFn"></textarea>
                             </div>
                         </template>
@@ -279,7 +279,7 @@
                         <template v-else>
                             <div class="betContainer_font">
                                 <p v-for="(d,i) in tipArr" :key="i">{{ d }}</p>
-                                <p class="tip_user">单注示列：01 03 05 07 10<br>多注示列：0102 0405 0708 0306 0910</p>
+                                <p class="tip_user">单注示列：0103050710<br>多注示列：0102040507 0803060910</p>
                                 <textarea class="metextarea" cols="100" rows="8" type='number' v-model="textareaData" v-on:input="textareaDataFn"></textarea>
                             </div>
                         </template>
@@ -460,13 +460,13 @@ export default {
             break;
         }
         GetPersonalInfo({'token': this.loginInfo.token,'uid': this.loginInfo.id})
-            .then(res => {
-                if (res.ret == 200) {
-                    this.data.userInfo = res.data;
-                } else {
-                    this.$alert('获取余额出错');
-                }
-            })
+        .then(res => {
+            if (res.ret == 200) {
+                this.data.userInfo = res.data;
+            } else {
+                this.$alert('获取余额出错');
+            }
+        })
         this.getPlayingData(); //获取玩法数据
         this.getLastOpenNumber(); //获取近十期开奖结果
         this.getNextTimeStage(); //获取结束投注时间
@@ -487,7 +487,7 @@ export default {
             this.selectMuen = false;
             this.bettingInfo.odd_play = data.odd_play;
             this.clearUserArr();
-            console.log(data.id);
+            // console.log(data.id);
         },
         // show hide 期次
         showQiCiTable() {
@@ -618,9 +618,16 @@ export default {
                 if (res.ret == 200) {
                     loading.close();
                     this.NavOneData = res.data;
-                    this.NavTwoData = res.data[0].play_rule;
+                    this.$store.state.oneIndex==null ? this.NavTwoData=res.data[0].play_rule : this.NavTwoData=res.data[this.$store.state.oneIndex].play_rule;
                     this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
                     this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
+                    for (let i = 0; i < res.data[this.$store.state.oneIndex].play_rule[0].odds.length; i++) {
+                        if(res.data[this.$store.state.oneIndex].play_rule[0].odds[i].id==this.$store.state.twoIndex){
+                            this.NavTwoFont = res.data[this.$store.state.oneIndex].play_rule[0].odds[i].rule;
+                        }
+                    }
+                    this.$store.state.oneIndex==null ? this.NavOne_index=0 : this.NavOne_index=this.$store.state.oneIndex;
+                    this.$store.state.twoIndex==null ? this.NavTwo_index=91 : this.NavTwo_index=this.$store.state.twoIndex;
                 } else {
                     loading.close();
                     this.$alert(res, '请求出错').then((result) => {
