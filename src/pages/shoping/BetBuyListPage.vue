@@ -100,9 +100,7 @@ export default {
             this.BettingData[i].money = (this.BettingData[i].one_money*this.BettingData[i].note)*this.multiple;
             this.allmoney += ((this.BettingData[i].one_money*this.BettingData[i].note)*this.multiple);
         }
-        this.$store.state.oneIndex = this.BettingData[this.BettingData.length-1].odd_play-1;
-        this.$store.state.twoIndex = this.BettingData[this.BettingData.length-1].odd_id;
-        console.log(this.BettingData[this.BettingData.length-1].odd_play-1,this.BettingData[this.BettingData.length-1].odd_id);
+        // console.log(this.$store.state.oneIndex,this.$store.state.twoIndex);
     },
     watch:{
         BettingData(){

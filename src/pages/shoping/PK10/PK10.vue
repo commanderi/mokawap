@@ -487,6 +487,10 @@ export default {
             this.selectMuen = false;
             this.bettingInfo.odd_play = data.odd_play;
             this.clearUserArr();
+            this.$store.state.oneIndex = this.NavOne_index;
+            this.$store.state.twoIndex = this.NavTwo_index;
+            this.$store.state.rate = data.rate;
+            this.$store.state.odd_play = data.odd_play;
             // console.log(data.id);
         },
         // show hide 期次
@@ -502,8 +506,8 @@ export default {
             }
         },
         ononeMoney:function(e){
-            this.bettingInfo.singleMoney = this.oneMoney*this.YuanAngle;
-            this.bettingInfo.allMoney = (this.bettingInfo.bettingNumber*this.oneMoney)*this.YuanAngle;
+            this.bettingInfo.singleMoney = (this.oneMoney*this.YuanAngle).toFixed(2);
+            this.bettingInfo.allMoney = (this.bettingInfo.bettingNumber*this.oneMoney)*this.YuanAngle.toFixed(2);
         },
         setBetting:function(){
             $('.Mask').removeClass('scale_1');
@@ -523,8 +527,8 @@ export default {
         setYuanAngle:function(index){
             const singleMoney = this.oneMoney;
             this.YuanAngle = index;
-            this.bettingInfo.singleMoney = singleMoney*index;
-            this.bettingInfo.allMoney = (this.bettingInfo.singleMoney*this.bettingInfo.bettingNumber)*this.bettingInfo.setMultipleNumber;
+            this.bettingInfo.singleMoney = (singleMoney*index).toFixed(2);
+            this.bettingInfo.allMoney = (this.bettingInfo.singleMoney*this.bettingInfo.bettingNumber)*this.bettingInfo.setMultipleNumber.toFixed(2);
         },
         // 打开菜单
         openMuen:function(){
@@ -541,6 +545,10 @@ export default {
                 .then(({ result }) => {
                     if (result) {
                         this.$store.state.BettingData = [];
+                        this.$store.state.oneIndex = null;
+                        this.$store.state.twoIndex = null;
+                        this.$store.state.rate = null;
+                        this.$store.state.odd_play = null;
                         me.$router.back(-1);
                     }
                 });
@@ -594,6 +602,10 @@ export default {
                     multiple:this.bettingInfo.setMultipleNumber,
                     odd_title:this.NavOneData[this.NavOne_index].name+'-'+this.NavTwoFont,
                 };
+                // this.$store.state.oneIndex = this.NavOne_index;
+                // this.$store.state.twoIndex = this.NavTwo_index;
+                // this.$store.state.rate = this.bettingInfo.rate;
+                // this.$store.state.odd_play = this.bettingInfo.odd_play;
                 this.$store.commit("increment",list);
                 this.$router.push({ path:'/BetBuyListPage', query:{id:this.id,title:this.title}});
             }
@@ -617,17 +629,22 @@ export default {
             .then(res => {
                 if (res.ret == 200) {
                     loading.close();
-                    this.NavOneData = res.data;
-                    this.$store.state.oneIndex==null ? this.NavTwoData=res.data[0].play_rule : this.NavTwoData=res.data[this.$store.state.oneIndex].play_rule;
-                    this.bettingInfo.rate = res.data[0].play_rule[0].odds[0].rate;
-                    this.bettingInfo.odd_play = res.data[0].play_rule[0].odds[0].odd_play;
-                    for (let i = 0; i < res.data[this.$store.state.oneIndex].play_rule[0].odds.length; i++) {
-                        if(res.data[this.$store.state.oneIndex].play_rule[0].odds[i].id==this.$store.state.twoIndex){
-                            this.NavTwoFont = res.data[this.$store.state.oneIndex].play_rule[0].odds[i].rule;
-                        }
-                    }
                     this.$store.state.oneIndex==null ? this.NavOne_index=0 : this.NavOne_index=this.$store.state.oneIndex;
                     this.$store.state.twoIndex==null ? this.NavTwo_index=91 : this.NavTwo_index=this.$store.state.twoIndex;
+                    this.NavOneData = res.data;
+                    this.NavTwoData = res.data[this.NavOne_index].play_rule;
+                    for (let i = 0; i < res.data[this.NavOne_index].play_rule[0].odds.length; i++) {
+                        if(res.data[this.NavOne_index].play_rule[0].odds[i].id==this.NavTwo_index){
+                            this.NavTwoFont = res.data[this.NavOne_index].play_rule[0].odds[i].rule; //设置二级玩法文字
+                        }
+                    }
+                    this.$store.state.rate==null ? this.bettingInfo.rate=res.data[0].play_rule[0].odds[0].rate : this.bettingInfo.rate=this.$store.state.rate;
+                    this.$store.state.odd_play==null ? this.bettingInfo.odd_play=res.data[0].play_rule[0].odds[0].odd_play : this.bettingInfo.odd_play=this.$store.state.odd_play;
+                    // this.bettingInfo.rate = res.data[this.NavOne_index].play_rule[0].odds[0].rate; //默认赔率
+                    // this.bettingInfo.odd_play = res.data[this.NavOne_index].play_rule[0].odds[0].odd_play; //默认玩法
+                    // console.log(this.NavOne_index,this.NavTwo_index);
+                    // console.log('默认赔率:'+this.bettingInfo.rate,'默认玩法:'+this.bettingInfo.odd_play);
+                    // console.log(res.data[this.NavOne_index]);
                 } else {
                     loading.close();
                     this.$alert(res, '请求出错').then((result) => {

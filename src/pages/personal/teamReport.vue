@@ -13,79 +13,27 @@
             </div>
             <!-- -->
             <div class="am-list container___5IQBA">
-                <div class="am-list-body">
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">总盈亏</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.win_lose}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">投注总金额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.betting_money}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">中奖总金额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.winning_money}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">充值总额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.recharge_total}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">提款总额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.withdraw_total}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">转入总额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.transfer_in}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">转出总额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.transfer_out}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">优惠总额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.sale_money}} 元</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="am-list-item am-list-item-middle">
-                        <div class="am-list-line">
-                            <div class="am-list-content">返点总额</div>
-                            <div class="am-list-extra">
-                                <div class="priceUp___2qp16">{{dataInfo.back_money}} 元</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="am-list-body" v-if="dataInfo!=null">
+                    <mu-container>
+                        <mu-paper :z-depth="1">
+                            <mu-data-table height="" :columns="columns" :sort.sync="sort" @sort-change="getData" :data="dataInfo">
+                                <template slot-scope="scope">
+                                    <td class="is-center">{{scope.row.mobile}}</td>
+                                    <td class="is-center">{{scope.row.recharge_total}}</td>
+                                    <td class="is-center">{{scope.row.withdraw_total}}</td>
+                                    <td class="is-center">{{scope.row.transfer_in}}</td>
+                                    <td class="is-center">{{scope.row.transfer_out}}</td>
+                                    <td class="is-center">{{scope.row.betting_money}}</td>
+                                    <td class="is-center">{{scope.row.winning_money}}</td>
+                                    <td class="is-center">{{scope.row.sale_money}}</td>
+                                    <td class="is-center">{{scope.row.back_money}}</td>
+                                    <td class="is-center">{{scope.row.win_lose}}</td>
+                                    <td class="is-center">{{scope.row.yj_money}}</td>
+                                    <td class="is-center">{{scope.row.up_mobile}}</td>
+                                </template>
+                            </mu-data-table>
+                        </mu-paper>
+                    </mu-container>
                 </div>
             </div>
         </div>
@@ -102,7 +50,25 @@ export default {
         return {
             start: "",
             end: "",
-            dataInfo: {}
+            dataInfo: null,
+            sort: {
+                name: '',
+                order: 'asc'
+            },
+            columns: [
+                { align: 'center',title: '用户名'},
+                { align: 'center',title: '充值金额'},
+                { align: 'center',title: '提现金额'},
+                { align: 'center',title: '代理转入'},
+                { align: 'center',title: '代理转出'},
+                { align: 'center',title: '总投注'},
+                { align: 'center',title: '总中奖'},
+                { align: 'center',title: '总优惠'},
+                { align: 'center',title: '总工资'},
+                { align: 'center',title: '总盈亏'},
+                { align: 'center',title: '总佣金'},
+                { align: 'center',title: '上级用户名'}
+            ],
         };
     },
     computed: {
@@ -167,4 +133,5 @@ export default {
 };
 </script>
 <style scoped lang="less">
+.am-list-body{background: rgba(0, 0, 0, 0);}
 </style>

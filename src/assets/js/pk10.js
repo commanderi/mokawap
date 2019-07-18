@@ -33,25 +33,25 @@ function getTextareaData(m){
         switch (me.NavTwo_index) {
             case 95:
                 if(me.userArr[i].length!=5){
-                    console.log('选择的号码不合法');
+                    // console.log('选择的号码不合法');
                     return
                 }
             break;
             case 98:
                 if(me.userArr[i].length!=8){
-                    console.log('选择的号码不合法');
+                    // console.log('选择的号码不合法');
                     return
                 }
             break;
             case 101:
                 if(me.userArr[i].length!=11){
-                    console.log('选择的号码不合法');
+                    // console.log('选择的号码不合法');
                     return
                 }
             break;
             case 103:
                 if(me.userArr[i].length!=14){
-                    console.log('选择的号码不合法');
+                    // console.log('选择的号码不合法');
                     return
                 }
             break;

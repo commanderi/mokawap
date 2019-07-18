@@ -13,7 +13,7 @@
             <ul class="InvitationList_content_ul" v-if="InvitationData!=null">
                 <li v-for="(d,i) in InvitationData" :key="i">
                     <span>{{ d.code }}</span>
-                    <span>{{ d.wage_percent*100+'%' }}</span>
+                    <span>{{ (d.wage_percent*100).toFixed(2)+'%' }}</span>
                     <span>{{ d.base }}</span>
                     <span>{{ d.status==1 ? '已开启' : '已禁用' }}</span>
                     <span>{{ d.register_number }}</span>

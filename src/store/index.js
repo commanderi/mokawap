@@ -11,13 +11,15 @@ const store = new Vuex.Store({
     getCates:null,
     oneIndex:null,
     twoIndex:null,
+    rate:null, //赔率
+    odd_play:null //玩法
   },
   // mutations主要是修改store存储的值(同步)
   mutations:{
     increment(state,data){
       state.BettingData.push(data);
-      state.oneIndex = data;
-      state.twoIndex = data;
+    //   state.oneIndex = data;
+    //   state.twoIndex = data;
     },
   },
   getters:{

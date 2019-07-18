@@ -12,8 +12,8 @@ function getTextareaData(m){
         me.userArr.push(successData[i].map(Number));
         for (let j = 0; j < me.userArr[i].length; j++) {
             if(!reg.test(me.userArr[i][j])){
-                console.log(me.textareaData);
-                console.log('请输入阿拉伯数字或正整数');
+                // console.log(me.textareaData);
+                // console.log('请输入阿拉伯数字或正整数');
                 return
             }
         }
@@ -35,7 +35,7 @@ function getTextareaData(m){
     }
     for (let i = 0; i < me.userArr.length; i++) {
         if(me.userArr[i].length!==me.userArrLen){
-            console.log('选择的号码不合法');
+            // console.log('选择的号码不合法');
             return
         }
     }
@@ -135,7 +135,7 @@ function singleSelect(e,y,x,me) {
     }
     me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
     AssemblyData(me,5);
-    console.log(me.userArr);
+    // console.log(me.userArr);
 };
 export{
     singleSelect
@@ -245,7 +245,7 @@ function multipleSelect(e,y,x,me){
     }
     me.bettingInfo.allMoney = (me.bettingInfo.singleMoney*me.bettingInfo.bettingNumber)*me.bettingInfo.setMultipleNumber;
     AssemblyData(me,5);
-    console.log(me.userArr);
+    // console.log(me.userArr);
 };
 export{
     multipleSelect
@@ -299,7 +299,7 @@ function selectClass(e,index,me){
     }
     for (let i = 0; i < me.userArr.length; i++) {
         if(me.userArr[i].length!==me.userArrLen){
-            console.log('选择的号码不合法');
+            // console.log('选择的号码不合法');
             return
         }
     }
