@@ -34,6 +34,14 @@
                     <mu-date-input type="date" v-model="end_time" placeholder="结束日期" full-width @change="endDateFn"></mu-date-input>
                 </div>
             </div>
+            <div class="bao_box">
+                <label>查询下级：</label>
+                <span class="bao">
+                    <input type="text" class="cha_input" placeholder="为空时查询自己" v-on:input="onmobile" v-model="xname">
+                    <i class="chaxiaji" v-show="disabled" v-on:click="guan"></i>
+                </span>
+                <button class="chaBtn" v-on:click="chaxun">查询</button>
+            </div>
             <div class="listItem___1Wjc2 commissionHead___2ZQTL">
                 <div class="col1 col1___1U4LE">期数</div>
                 <div class="col2 col2___1RM10">彩种名称</div>
@@ -41,7 +49,7 @@
                 <div class="col4 col4___1YeO9">投注金额</div>
                 <div class="col5 col5___3KLE8">状态</div>
             </div>
-            <div class="table-list-box" v-if="dataList.length>=1">
+            <div class="table-list-box" v-if="dataList!=null">
                 <mu-load-more :refreshing="refreshing" :loading="loading" @load="load">
                     <mu-list>
                         <template>
@@ -64,7 +72,7 @@
                 </mu-load-more>
             </div>
             <!-- -->
-            <div class="no-data" v-if="dataList.length<=0">
+            <div class="no-data" v-else>
                 <div class="imgError___64CBy"></div>
                 <div class="errorText2___1uaqX">暂无当前状态数据</div>
             </div>
@@ -82,13 +90,15 @@ export default {
             refreshing: false,
             loading: false,
             isSelect: false,
+            disabled:false,
             type: "",
             start_time: "",
             end_time: "",
             page: 1, // 当前页数
             last_page: 0, // 总共多少页
-            dataList: [],
+            dataList: null,
             selectText: "全部订单",
+            xname:'',
             playingList: [
                 {
                     type: null,
@@ -122,12 +132,9 @@ export default {
         ...mapState(["loginInfo"])
     },
     mounted() {
-        document
-            .querySelector("body")
-            .setAttribute("style", "background:#f5f5f5 !important;");
+        document.querySelector("body").setAttribute("style", "background:#f5f5f5 !important;");
         this.start_time = this.time(new Date().getTime(), true);
         this.end_time = this.time(new Date().getTime(), false);
-        //
         this.getData();
     },
     methods: {
@@ -138,17 +145,22 @@ export default {
                 type: this.type,
                 start_time: this.start_time,
                 end_time: this.end_time,
-                page: this.page
+                page: this.page,
+                mobile: this.xname
             };
+            this.dataList = null;
             BettingRecord(param).then(res => {
                 this.loading = false;
-                let list = res.data.data;
-                let dataList = this.dataList;
-                for (var i = 0; i < list.length; i++) {
-                    dataList.push(list[i]);
+                if(res.ret==200){
+                    if(res.data.data==null||res.data.data==''){
+                        this.$toast.error('没有数据');
+                    }else{
+                        this.dataList = res.data.data;
+                        this.last_page = res.data.last_page;
+                    }
+                }else{
+                    this.$toast.error(res.msg);
                 }
-                this.dataList = dataList;
-                this.last_page = res.data.last_page;
             });
         },
         load() {
@@ -158,6 +170,25 @@ export default {
                 this.loading = true;
                 this.getData();
             }
+        },
+        onmobile:function(){
+            if(this.xname==null||this.xname==''){
+                this.disabled = false;
+            }else{
+                this.disabled = true;
+            }
+        },
+        guan(){
+            this.xname = '';
+            this.disabled = false;
+        },
+        chaxun(){
+            // if(this.xname==''||this.xname==null){
+            //     alert('请输入下级用户名');
+            // }else{
+                
+            // }
+            this.getData();
         },
         returnFn() {
             this.$router.back(-1);
@@ -194,7 +225,7 @@ export default {
             this.getData();
         },
         resetData() {
-            this.dataList = [];
+            this.dataList = null;
             this.page = 1;
         },
         // 时间戳转换成  //2017-05-08 10:31:27
