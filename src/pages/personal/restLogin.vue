@@ -43,6 +43,8 @@ export default {
     data() {
         return {
             form: {
+                token: '',
+                uid: '',
                 old_password: "",
                 new_password1: "",
                 new_password2: ""
@@ -62,6 +64,8 @@ export default {
     },
     methods: {
         onSubmit() {
+            this.form.token = this.loginInfo.token;
+            this.form.uid = this.loginInfo.id;
             let param = this.form;
             let psdR = /^.{6,15}$/;
             if (!psdR.test(param.new_password1)) {
